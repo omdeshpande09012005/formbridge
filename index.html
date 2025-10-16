@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contact — Resend Email Demo</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;padding:24px;background:#f7fafc}
+    .card{max-width:680px;margin:24px auto;padding:20px;background:#fff;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+    label{display:block;margin-top:12px;font-weight:600}
+    input,textarea{width:100%;padding:10px;margin-top:6px;border-radius:6px;border:1px solid #ddd}
+    button{margin-top:14px;padding:10px 14px;border-radius:8px;border:none;background:#2563eb;color:#fff;font-weight:700}
+    .note{font-size:13px;color:#666;margin-top:8px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Contact us</h2>
+    <p class="note">This demo sends your message to the project admin (backend required).</p>
+
+    <label for="name">Name</label>
+    <input id="name" placeholder="Your full name" />
+
+    <label for="email">Email</label>
+    <input id="email" placeholder="you@example.com" type="email" />
+
+    <label for="message">Message</label>
+    <textarea id="message" rows="6" placeholder="Type your message..."></textarea>
+
+    <button id="send">Send Message</button>
+    <p id="status" class="note"></p>
+  </div>
+
+  <script>
+    const API_ENDPOINT = "https://example.com/submit"; // <-- update when backend ready
+
+    document.getElementById('send').addEventListener('click', async () => {
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+      const status = document.getElementById('status');
+
+      if (!name || !email || !message) {
+        status.textContent = 'Please fill all fields.';
+        return;
+      }
+
+      status.textContent = 'Sending...';
+      try {
+        const resp = await fetch(API_ENDPOINT, {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({name,email,message})
+        });
+        if (!resp.ok) throw new Error(await resp.text());
+        const data = await resp.json().catch(()=>({}));
+        status.textContent = 'Message sent ✓ (id: '+(data.id||'n/a')+')';
+      } catch(err){
+        console.error(err);
+        status.textContent = 'Failed to send — open devtools to see error. ' + (err.message||'');
+      }
+    });
+  </script>
+</body>
+</html>
