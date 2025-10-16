@@ -35,7 +35,7 @@ def lambda_handler(event, context):
         return {
             'statusCode': 500,
             'headers': {
-                'Access-Control-Allow-Origin': 'https://formbridgegod.netlify.app',
+                'Access-Control-Allow-Origin': 'https://formbridgeod.netlify.app',
                 'Access-Control-Allow-Methods': 'POST,OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type'
             },
