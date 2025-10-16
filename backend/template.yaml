@@ -1,11 +1,16 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: FormBridge backend - SAM template (CORS via Serverless::Api, reserved env fixed)
+Description: FormBridge backend - SAM template (CORS via Globals, runtime python3.11)
 
 Globals:
+  Api:
+    Cors:
+      AllowOrigin: "'https://formbridgeod.netlify.app'"   # restrict to your Netlify origin (or use "'*'" for dev)
+      AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      AllowMethods: "'POST,OPTIONS'"
   Function:
     Timeout: 30
-    Runtime: python3.9
+    Runtime: python3.11
     MemorySize: 256
 
 Parameters:
@@ -14,15 +19,6 @@ Parameters:
     Default: contact-form-submissions
 
 Resources:
-  # Create a Serverless API with CORS configuration
-  ServerlessRestApi:
-    Type: AWS::Serverless::Api
-    Properties:
-      StageName: Prod
-      Cors:
-        AllowOrigins: "'*'"                         # dev: allow all origins. Replace with your Netlify domain to restrict.
-        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-        AllowMethods: "'POST,OPTIONS'"
 
   ContactTable:
     Type: AWS::DynamoDB::Table
@@ -36,7 +32,7 @@ Resources:
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
 
-    ContactFormFunction:
+  ContactFormFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: contactFormProcessor
@@ -45,7 +41,7 @@ Resources:
       Environment:
         Variables:
           DDB_TABLE: !Ref DDBTableName
-          SES_RECIPIENT: "omdeshpande123456789@gmail.com"   # <-- main receiver
+          SES_RECIPIENT: "omdeshpande123456789@gmail.com"
           SES_ALLOWED_SENDERS: "sahil.bobhate@mitwpu.edu.in,om.deshpande@mitwpu.edu.in,omdeshpande0901@gmail.com,aayush.das@mitwpu.edu.in"
           APP_REGION: !Ref "AWS::Region"
       Policies:
@@ -59,8 +55,14 @@ Resources:
               Action:
                 - ses:SendEmail
                 - ses:SendRawEmail
-              Resource: "*"   # okay for demo; tighten later for production
+              Resource: "*"
 
+      Events:
+        ContactApi:
+          Type: Api
+          Properties:
+            Path: /submit
+            Method: post
 
 Outputs:
   ApiUrl:
