@@ -5,89 +5,77 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Contact — FormBridge</title>
   <style>
-    :root{
-      --bg:#f4f7fb;
-      --card:#fff;
-      --muted:#6b7280;
-      --accent:#2563eb;
-      --danger:#ef4444;
-      --success:#16a34a;
-      --radius:10px;
-      --shadow: 0 10px 30px rgba(16,24,40,0.06);
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-    }
-    body{background:var(--bg);margin:0;padding:28px;display:flex;align-items:center;justify-content:center;min-height:100vh}
-    .card{width:100%;max-width:720px;padding:28px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow)}
-    h2{margin:0 0 6px 0}
-    p.note{margin:6px 0 18px;color:var(--muted)}
-    label{display:block;margin-top:12px;font-weight:700;color:#111827}
-    input,textarea{width:100%;padding:12px;margin-top:8px;border-radius:8px;border:1px solid #e6e9ef;background:#fbfdff;font-size:14px;outline:none}
-    input:focus,textarea:focus{box-shadow:0 0 0 4px rgba(37,99,235,0.08);border-color:rgba(37,99,235,0.6)}
-    textarea{min-height:140px;resize:vertical}
-    .row{display:flex;gap:12px}
-    .muted{color:var(--muted);font-size:13px}
-    .actions{display:flex;align-items:center;gap:12px;margin-top:16px}
-    button{padding:10px 14px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-weight:700;cursor:pointer}
-    button[disabled]{opacity:0.6;cursor:not-allowed}
-    .status{margin-top:10px;font-size:14px}
-    .status .ok{color:var(--success)}
-    .status .err{color:var(--danger)}
-    .small{font-size:13px;color:var(--muted)}
-    /* spinner */
-    .spinner{display:inline-block;width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;animation:spin 1s linear infinite;vertical-align:middle;margin-right:8px}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    footer{margin-top:18px;font-size:12px;color:var(--muted)}
-    a.inline{color:var(--accent);text-decoration:none}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;padding:24px;background:#f7fafc}
+    .card{max-width:680px;margin:24px auto;padding:24px;background:#fff;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+    label{display:block;margin-top:12px;font-weight:600}
+    input,textarea{width:100%;padding:10px;margin-top:6px;border-radius:6px;border:1px solid #ddd}
+    button{margin-top:14px;padding:10px 14px;border-radius:8px;border:none;background:#2563eb;color:#fff;font-weight:700;cursor:pointer}
+    button[disabled]{opacity:.6;cursor:not-allowed}
+    .note{font-size:13px;color:#666;margin-top:8px}
+    .success{color: #065f46; font-weight:700}
+    .error{color:#b91c1c; font-weight:700}
+    .meta{font-size:12px;color:#555;margin-top:8px}
   </style>
 </head>
 <body>
-  <div class="card" role="main" aria-labelledby="title">
-    <h2 id="title">Contact us</h2>
-    <p class="note">This demo sends your message to the project admin. No custom domain — working directly with SES/ApiGateway.</p>
+  <div class="card">
+    <h2>Contact us</h2>
+    <p class="note">This demo sends your message to the project admin (backend required).</p>
 
     <label for="name">Name</label>
-    <input id="name" placeholder="Your full name" autocomplete="name" />
+    <input id="name" placeholder="Your full name" />
 
     <label for="email">Email</label>
-    <input id="email" placeholder="you@example.com" type="email" autocomplete="email" />
+    <input id="email" placeholder="you@example.com" type="email" />
 
     <label for="message">Message</label>
     <textarea id="message" rows="6" placeholder="Type your message..."></textarea>
 
-    <div class="actions">
-      <button id="send">Send Message</button>
-      <div id="spinnerWrap" style="display:none;"><span class="spinner" aria-hidden="true"></span>Sending...</div>
-    </div>
-
-    <div id="status" class="status small" role="status" aria-live="polite"></div>
-    <footer class="small muted">
-      Tip: open devtools (Console / Network) if something fails.
-      <br>
-      <a class="inline" href="#" id="openLogs" style="display:none">Open Lambda logs</a>
-    </footer>
+    <button id="send">Send Message</button>
+    <p id="status" class="note"></p>
+    <div id="meta" class="meta"></div>
   </div>
 
   <script>
-    // --- SET YOUR API ENDPOINT HERE ---
-    // Replace with your real API Gateway invoke URL (example format):
-    // const API_ENDPOINT = "https://97m3oxi3tl.execute-api.ap-south-1.amazonaws.com/Prod/submit";
+    // ----- UPDATE THIS to your working API invoke URL -----
     const API_ENDPOINT = "https://97m3oxi3tl.execute-api.ap-south-1.amazonaws.com/Prod/submit";
+    // ----------------------------------------------------
 
     const sendBtn = document.getElementById('send');
-    const spinnerWrap = document.getElementById('spinnerWrap');
     const statusEl = document.getElementById('status');
-    const openLogs = document.getElementById('openLogs');
+    const metaEl = document.getElementById('meta');
 
-    function setStatus(text, type) {
-      statusEl.innerHTML = text || '';
-      statusEl.classList.remove('err','ok');
-      if (type === 'ok') statusEl.classList.add('ok');
-      if (type === 'err') statusEl.classList.add('err');
+    function setStatus(text, type='note'){
+      statusEl.textContent = text;
+      statusEl.className = type === 'error' ? 'error' : (type === 'success' ? 'success' : 'note');
     }
 
-    function validateEmail(email) {
-      // simple email check
-      return /\S+@\S+\.\S+/.test(email);
+    async function postData(url, payload, timeoutMs = 15000) {
+      // timeout helper
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), timeoutMs);
+
+      try {
+        const resp = await fetch(url, {
+          method: 'POST',
+          mode: 'cors',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(payload),
+          signal: controller.signal,
+        });
+
+        clearTimeout(id);
+
+        // We got a network-level response — attempt to parse, but be robust
+        const text = await resp.text(); // read as text first
+        let data = {};
+        try { data = text ? JSON.parse(text) : {}; } catch(e) { data = { raw: text }; }
+
+        return { ok: resp.ok, status: resp.status, data, respHeaders: resp.headers };
+      } catch (err) {
+        clearTimeout(id);
+        throw err; // let caller handle
+      }
     }
 
     sendBtn.addEventListener('click', async () => {
@@ -95,69 +83,51 @@
       const email = document.getElementById('email').value.trim();
       const message = document.getElementById('message').value.trim();
 
+      metaEl.textContent = '';
       if (!name || !email || !message) {
-        setStatus('Please fill all fields.', 'err');
-        return;
-      }
-      if (!validateEmail(email)) {
-        setStatus('Please enter a valid email address.', 'err');
+        setStatus('Please fill all fields.', 'error');
         return;
       }
 
-      // UI state
       sendBtn.disabled = true;
-      spinnerWrap.style.display = 'inline-block';
-      setStatus('Sending...', '');
+      setStatus('Sending...');
 
       try {
-        const resp = await fetch(API_ENDPOINT, {
-          method: 'POST',
-          mode: 'cors',          // allow cross-origin
-          cache: 'no-cache',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({name, email, message})
-        });
+        const start = Date.now();
+        const result = await postData(API_ENDPOINT, { name, email, message }, 15000);
+        const elapsed = Date.now() - start;
 
-        // If no network or CORS preflight fails, fetch will throw. If response is not OK, handle it.
-        if (!resp.ok) {
-          // try to read body
-          let txt;
-          try { txt = await resp.text(); } catch(e) { txt = resp.statusText || 'Request failed'; }
-          // Show friendly message
-          setStatus('Failed to send — server responded: ' + (txt || resp.status), 'err');
+        // Show headers (CORS / origin) if helpful
+        const allowOrigin = result.respHeaders.get('Access-Control-Allow-Origin') || 'n/a';
+        metaEl.textContent = `Status: ${result.status} • CORS Allow-Origin: ${allowOrigin} • ${elapsed}ms`;
 
-          // If 4xx/5xx, show link to logs (optionally)
-          if (openLogs) {
-            openLogs.style.display = 'inline';
-            openLogs.onclick = (ev) => {
-              ev.preventDefault();
-              // open CloudWatch logs: user will need to adjust URL (or open via console)
-              window.open('https://console.aws.amazon.com/cloudwatch/home?region=ap-south-1#logsV2:','_blank');
-            };
-          }
-          throw new Error('Server error: ' + resp.status);
+        if (result.ok) {
+          // Try to read returned id if present
+          const id = result.data && (result.data.id || result.data.ID || result.data.Id) ? (result.data.id || result.data.ID || result.data.Id) : null;
+          setStatus('Message sent ✓' + (id ? ` (id: ${id})` : ''), 'success');
+          // clear form optionally
+          document.getElementById('name').value = '';
+          document.getElementById('email').value = '';
+          document.getElementById('message').value = '';
+        } else {
+          // Non-2xx responses
+          console.error('Server returned non-OK response', result);
+          const errMsg = (result.data && result.data.error) ? result.data.error : `Status ${result.status}`;
+          setStatus('Failed to send — server returned error: ' + errMsg, 'error');
         }
-
-        // success
-        let data = {};
-        try { data = await resp.json(); } catch(e) { /* ignore */ }
-
-        const id = data && data.id ? data.id : 'n/a';
-        setStatus('Message sent ✓ (id: ' + id + ')', 'ok');
-
-        // optional: clear form
-        document.getElementById('name').value = '';
-        document.getElementById('email').value = '';
-        document.getElementById('message').value = '';
-
       } catch (err) {
-        // network / CORS / parsing errors
-        console.error('Send error', err);
-        // If CORS preflight returned disallowed origin, browser error will be generic.
-        setStatus('Failed to send — check console and network tab. ' + (err.message || ''), 'err');
+        // Network / CORS / timeout
+        console.error('Request failed', err);
+
+        if (err.name === 'AbortError') {
+          setStatus('Failed to send — request timed out.', 'error');
+        } else {
+          // Most likely CORS or network problem
+          setStatus('Failed to send — network/CORS error (open devtools) .', 'error');
+        }
+        metaEl.textContent = `Error: ${err.message || String(err)}`;
       } finally {
         sendBtn.disabled = false;
-        spinnerWrap.style.display = 'none';
       }
     });
   </script>
