@@ -36,7 +36,7 @@ Resources:
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
 
-  ContactFormFunction:
+    ContactFormFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: contactFormProcessor
@@ -45,8 +45,8 @@ Resources:
       Environment:
         Variables:
           DDB_TABLE: !Ref DDBTableName
-          SES_SENDER: "no-reply@yourdomain.com"
-          SES_RECIPIENT: "admin@yourdomain.com"
+          SES_RECIPIENT: "omdeshpande123456789@gmail.com"   # <-- main receiver
+          SES_ALLOWED_SENDERS: "sahil.bobhate@mitwpu.edu.in,om.deshpande@mitwpu.edu.in,omdeshpande0901@gmail.com,aayush.das@mitwpu.edu.in"
           APP_REGION: !Ref "AWS::Region"
       Policies:
         - Version: "2012-10-17"
@@ -58,14 +58,9 @@ Resources:
             - Effect: Allow
               Action:
                 - ses:SendEmail
-              Resource: "*"
-      Events:
-        ContactApi:
-          Type: Api
-          Properties:
-            RestApiId: !Ref ServerlessRestApi   # attach to the API resource configured above
-            Path: /submit
-            Method: post
+                - ses:SendRawEmail
+              Resource: "*"   # okay for demo; tighten later for production
+
 
 Outputs:
   ApiUrl:
