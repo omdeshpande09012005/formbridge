@@ -1,8 +1,14 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: FormBridge backend - SAM template (explicit Serverless::Api, runtime python3.11)
+Description: FormBridge backend - SAM template (Globals-based CORS, runtime python3.11)
 
 Globals:
+  Api:
+    Cors:
+      # exact origin (must be a quoted string inside single-quotes)
+      AllowOrigin: "'https://omdeshpande09012005.github.io'"
+      AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      AllowMethods: "'POST,OPTIONS'"
   Function:
     Timeout: 30
     Runtime: python3.11
@@ -15,16 +21,11 @@ Parameters:
 
 Resources:
 
-  # Explicit API so we can set StageName and Cors cleanly
+  # Explicit API resource (we leave Cors configuration to Globals)
   ServerlessRestApi:
     Type: AWS::Serverless::Api
     Properties:
       StageName: Prod
-      Cors:
-        # Restrict to your exact Netlify origin. For dev/testing use "'*'".
-        AllowOrigin: "'https://omdeshpande09012005.github.io'"
-        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-        AllowMethods: "'POST,OPTIONS'"
 
   ContactTable:
     Type: AWS::DynamoDB::Table
@@ -61,7 +62,7 @@ Resources:
               Action:
                 - ses:SendEmail
                 - ses:SendRawEmail
-              Resource: "*"   # okay for demo; scope down in prod
+              Resource: "*"   # tighten in production
       Events:
         ContactApi:
           Type: Api
