@@ -1,13 +1,8 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: FormBridge backend - SAM template (CORS via Globals, runtime python3.11)
+Description: FormBridge backend - SAM template (explicit Serverless::Api, runtime python3.11)
 
 Globals:
-  Api:
-    Cors:
-      AllowOrigin: "'https://formbridgeod.netlify.app'"   # restrict to your Netlify origin (or use "'*'" for dev)
-      AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-      AllowMethods: "'POST,OPTIONS'"
   Function:
     Timeout: 30
     Runtime: python3.11
@@ -19,6 +14,17 @@ Parameters:
     Default: contact-form-submissions
 
 Resources:
+
+  # Explicit API so we can set StageName and Cors cleanly
+  ServerlessRestApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        # Restrict to your exact Netlify origin. For dev/testing use "'*'".
+        AllowOrigin: "'https://formbridgeod.netlify.app'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowMethods: "'POST,OPTIONS'"
 
   ContactTable:
     Type: AWS::DynamoDB::Table
@@ -55,16 +61,16 @@ Resources:
               Action:
                 - ses:SendEmail
                 - ses:SendRawEmail
-              Resource: "*"
-
+              Resource: "*"   # okay for demo; scope down in prod
       Events:
         ContactApi:
           Type: Api
           Properties:
+            RestApiId: !Ref ServerlessRestApi
             Path: /submit
             Method: post
 
 Outputs:
   ApiUrl:
-    Description: "API Gateway endpoint"
+    Description: "API Gateway invoke URL for the submit endpoint"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/submit"
