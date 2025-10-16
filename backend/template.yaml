@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: FormBridge backend - SAM template (fixed reserved env names)
+Description: FormBridge backend - SAM template (CORS enabled, reserved env names fixed)
 
 Globals:
   Function:
@@ -56,6 +56,13 @@ Resources:
           Properties:
             Path: /submit
             Method: post
+            Cors:
+              # For development allow all origins. Replace '*' with your Netlify domain to restrict.
+              AllowOrigin: "'*'"
+              # Allowed methods (POST + OPTIONS preflight)
+              AllowMethods: "'POST,OPTIONS'"
+              # Common headers used by browsers + any custom headers you need
+              AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
 
 Outputs:
   ApiUrl:
