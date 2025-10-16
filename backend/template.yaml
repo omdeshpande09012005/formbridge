@@ -21,8 +21,8 @@ Parameters:
 
 Resources:
 
-  # Explicit API resource (we leave Cors configuration to Globals)
-  ServerlessRestApi:
+  # Explicit API resource (Cors configured via Globals above)
+  FormApi:
     Type: AWS::Serverless::Api
     Properties:
       StageName: Prod
@@ -67,11 +67,11 @@ Resources:
         ContactApi:
           Type: Api
           Properties:
-            RestApiId: !Ref ServerlessRestApi
+            RestApiId: !Ref FormApi
             Path: /submit
             Method: post
 
 Outputs:
   ApiUrl:
     Description: "API Gateway invoke URL for the submit endpoint"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/submit"
+    Value: !Sub "https://${FormApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/submit"
