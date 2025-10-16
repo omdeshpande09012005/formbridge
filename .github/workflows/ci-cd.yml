@@ -73,7 +73,6 @@ jobs:
             --no-confirm-changeset \
             --no-fail-on-empty-changeset \
             --disable-rollback false \
-            --parameter-overrides DDBTableName=contact-form-submissions
 
   pages:
     needs: deploy

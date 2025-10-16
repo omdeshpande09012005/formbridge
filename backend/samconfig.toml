@@ -5,8 +5,9 @@ region = "ap-south-1"
 
 [default.deploy.parameters]
 stack_name = "formbridge-stack"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-mvvhfghujckt"
+resolve_s3 = true
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = false
-resolve_s3 = true
-s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-mvvhfghujckt"
 disable_rollback = false
+parameter_overrides = "DDBTableName=contact-form-submissions"
