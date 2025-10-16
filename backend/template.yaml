@@ -22,7 +22,7 @@ Resources:
       StageName: Prod
       Cors:
         # Restrict to your exact Netlify origin. For dev/testing use "'*'".
-        AllowOrigin: "'https://formbridgeod.netlify.app'"
+        AllowOrigin: "'https://omdeshpande09012005.github.io'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
         AllowMethods: "'POST,OPTIONS'"
 
