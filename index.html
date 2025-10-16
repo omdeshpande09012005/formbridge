@@ -4,54 +4,229 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Contact — FormBridge</title>
+
+  <!-- Google font (optional) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;padding:24px;background:#f7fafc}
-    .card{max-width:680px;margin:24px auto;padding:24px;background:#fff;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
-    label{display:block;margin-top:12px;font-weight:600}
-    input,textarea{width:100%;padding:10px;margin-top:6px;border-radius:6px;border:1px solid #ddd}
-    button{margin-top:14px;padding:10px 14px;border-radius:8px;border:none;background:#2563eb;color:#fff;font-weight:700;cursor:pointer}
-    button[disabled]{opacity:.6;cursor:not-allowed}
-    .note{font-size:13px;color:#666;margin-top:8px}
-    .success{color: #065f46; font-weight:700}
-    .error{color:#b91c1c; font-weight:700}
-    .meta{font-size:12px;color:#555;margin-top:8px}
+    :root{
+      --bg:#0f1724;           /* dark hero */
+      --panel:#ffffff;        /* light card */
+      --muted:#64748b;
+      --accent:#2563eb;       /* blue */
+      --accent-2:#7c3aed;     /* purple */
+      --success:#10b981;
+      --danger:#ef4444;
+      --glass: rgba(255,255,255,0.06);
+      --radius:14px;
+      --shadow: 0 10px 30px rgba(2,6,23,0.35);
+    }
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial;color:#0b1220}
+    body{
+      background: linear-gradient(180deg,#f8fafc 0%, #f1f5f9 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:36px;
+    }
+
+    /* wrap layout */
+    .layout{
+      max-width:1200px;
+      width:100%;
+      display:grid;
+      grid-template-columns: 1fr 420px;
+      gap:28px;
+      align-items:stretch;
+    }
+
+    /* left: form card */
+    .card{
+      background:var(--panel);
+      border-radius:var(--radius);
+      padding:28px;
+      box-shadow: var(--shadow);
+    }
+    h1{margin:0 0 6px 0;font-size:24px}
+    .intro{color:var(--muted);font-size:14px;margin-bottom:18px}
+
+    label{display:block;font-weight:600;margin-top:12px;color:#0b1220}
+    input, textarea, select{
+      width:100%;
+      box-sizing:border-box;
+      padding:12px 14px;
+      margin-top:8px;
+      border-radius:10px;
+      border:1px solid #e6eef8;
+      background: #fff;
+      font-size:14px;
+      color:#0b1220;
+      outline: none;
+      transition: box-shadow .12s, border-color .12s;
+    }
+    input:focus, textarea:focus, select:focus{
+      border-color: var(--accent);
+      box-shadow: 0 4px 18px rgba(37,99,235,0.12);
+    }
+    textarea{min-height:120px; resize:vertical}
+
+    .row{
+      display:flex;
+      gap:12px;
+    }
+    .row .col{flex:1}
+
+    .btn{
+      appearance:none;
+      border:0;
+      background: linear-gradient(90deg,var(--accent),var(--accent-2));
+      color:white;
+      padding:12px 16px;
+      border-radius:10px;
+      font-weight:700;
+      cursor:pointer;
+      margin-top:18px;
+      box-shadow: 0 8px 20px rgba(37,99,235,0.12);
+    }
+    .btn[disabled]{opacity:.6;cursor:not-allowed;box-shadow:none}
+
+    .note{font-size:13px;color:var(--muted);margin-top:10px}
+
+    .status{
+      margin-top:12px;
+      font-weight:700;
+      font-size:13px;
+    }
+    .status.success{color:var(--success)}
+    .status.error{color:var(--danger)}
+
+    .meta{font-size:12px;color:#475569;margin-top:8px;white-space:pre-wrap}
+
+    /* right: hero / info */
+    .hero{
+      border-radius:var(--radius);
+      padding:26px;
+      background:
+        radial-gradient(600px 200px at 10% 0%, rgba(124,58,237,0.06), transparent 12%),
+        linear-gradient(180deg, rgba(15,23,36,0.95), rgba(10,12,20,0.95));
+      color: #f8fafc;
+      box-shadow: var(--shadow);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      align-items:flex-start;
+      min-height:360px;
+    }
+    .hero h2{margin:0;font-size:22px;color:#fff}
+    .hero p{margin:8px 0 20px 0;color:#cbd5e1}
+    .feature-list{display:grid;gap:12px;width:100%}
+    .feature{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      background: rgba(255,255,255,0.03);
+      padding:12px;
+      border-radius:10px;
+      width:100%;
+    }
+    .feature .icon{
+      min-width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;
+    }
+    .feature strong{display:block;font-weight:700}
+    .feature span{display:block;font-size:13px;color:#cbd5e1;margin-top:4px}
+
+    /* responsive */
+    @media (max-width:980px){
+      .layout{grid-template-columns: 1fr; padding:0; gap:18px}
+      .hero{order:-1}
+    }
   </style>
 </head>
+
 <body>
-  <div class="card">
-    <h2>Contact us</h2>
-    <p class="note">This demo sends your message to the project admin (backend required).</p>
+  <div class="layout">
+    <!-- Left: Form -->
+    <div class="card" role="main" aria-labelledby="contactHeading">
+      <h1 id="contactHeading">Contact us</h1>
+      <div class="intro">Send a message — it will be delivered to the project admin. (Backend required)</div>
 
-    <label for="name">Name</label>
-    <input id="name" placeholder="Your full name" />
+      <label for="name">Name</label>
+      <input id="name" placeholder="Your full name" autocomplete="name" />
 
-    <label for="email">Email</label>
-    <input id="email" placeholder="you@example.com" type="email" />
+      <label for="email">Email</label>
+      <input id="email" placeholder="you@example.com" type="email" autocomplete="email" />
 
-    <label for="message">Message</label>
-    <textarea id="message" rows="6" placeholder="Type your message..."></textarea>
+      <label for="subject">Subject</label>
+      <select id="subject" aria-label="Subject">
+        <option value="">— Select a topic —</option>
+        <option>General question</option>
+        <option>Bug report</option>
+        <option>Feature request</option>
+        <option>Other</option>
+      </select>
 
-    <button id="send">Send Message</button>
-    <p id="status" class="note"></p>
-    <div id="meta" class="meta"></div>
+      <label for="message">Message</label>
+      <textarea id="message" rows="6" placeholder="How can we help?"></textarea>
+
+      <div style="display:flex;gap:12px;align-items:center;">
+        <button id="send" class="btn">Send Message</button>
+        <div id="spinner" style="display:none;color:#475569;font-size:13px">Processing…</div>
+      </div>
+
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+      <div id="meta" class="meta" aria-hidden="false"></div>
+      <div class="note">We’ll keep your message private. If you want a reply, make sure your email is correct.</div>
+    </div>
+
+    <!-- Right: Hero / Info -->
+    <aside class="hero" aria-label="About FormBridge">
+      <h2>Get in touch</h2>
+      <p>We reply within 24 hours. Use this form to send feedback, bug reports or ideas. The backend handles storage and optional email forwarding.</p>
+
+      <div class="feature-list">
+        <div class="feature">
+          <div class="icon">📭</div>
+          <div>
+            <strong>Email delivered</strong>
+            <span>Messages are stored in DynamoDB and forwarded via SES (if configured).</span>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="icon">🔒</div>
+          <div>
+            <strong>Safe & restricted</strong>
+            <span>Only verified sender addresses are allowed to avoid spoofing. CORS protects frontend origins.</span>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="icon">⚙️</div>
+          <div>
+            <strong>Production ready</strong>
+            <span>CI/CD with GitHub Actions deploys backend and frontend automatically.</span>
+          </div>
+        </div>
+      </div>
+    </aside>
   </div>
 
   <script>
-    // ----- UPDATE THIS to your working API invoke URL -----
+    // ------------- UPDATE THIS to your working API invoke URL -------------
     const API_ENDPOINT = "https://97m3oxi3tl.execute-api.ap-south-1.amazonaws.com/Prod/submit";
-    // ----------------------------------------------------
+    // ---------------------------------------------------------------------
 
     const sendBtn = document.getElementById('send');
     const statusEl = document.getElementById('status');
     const metaEl = document.getElementById('meta');
+    const spinner = document.getElementById('spinner');
 
-    function setStatus(text, type='note'){
-      statusEl.textContent = text;
-      statusEl.className = type === 'error' ? 'error' : (type === 'success' ? 'success' : 'note');
+    function setStatus(text, type = '') {
+      statusEl.textContent = text || '';
+      statusEl.className = 'status' + (type ? ' ' + type : '');
     }
 
     async function postData(url, payload, timeoutMs = 15000) {
-      // timeout helper
       const controller = new AbortController();
       const id = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -66,69 +241,89 @@
 
         clearTimeout(id);
 
-        // We got a network-level response — attempt to parse, but be robust
-        const text = await resp.text(); // read as text first
+        const text = await resp.text();
         let data = {};
-        try { data = text ? JSON.parse(text) : {}; } catch(e) { data = { raw: text }; }
+        try { data = text ? JSON.parse(text) : {}; } catch (e) { data = { raw: text }; }
 
         return { ok: resp.ok, status: resp.status, data, respHeaders: resp.headers };
       } catch (err) {
         clearTimeout(id);
-        throw err; // let caller handle
+        throw err;
       }
+    }
+
+    async function trySend(payload, tries = 2) {
+      let lastErr;
+      for (let i=0;i<tries;i++){
+        try {
+          return await postData(API_ENDPOINT, payload);
+        } catch(e) {
+          lastErr = e;
+          await new Promise(r => setTimeout(r, 300 + i*400));
+        }
+      }
+      throw lastErr;
     }
 
     sendBtn.addEventListener('click', async () => {
       const name = document.getElementById('name').value.trim();
       const email = document.getElementById('email').value.trim();
+      const subject = document.getElementById('subject').value.trim();
       const message = document.getElementById('message').value.trim();
 
-      metaEl.textContent = '';
+      metaEl.textContent = ''; setStatus('', '');
+
       if (!name || !email || !message) {
-        setStatus('Please fill all fields.', 'error');
+        setStatus('Please fill name, email and message.', 'error');
         return;
       }
 
       sendBtn.disabled = true;
-      setStatus('Sending...');
+      spinner.style.display = 'block';
+      setStatus('Sending…');
 
       try {
         const start = Date.now();
-        const result = await postData(API_ENDPOINT, { name, email, message }, 15000);
+        const res = await trySend({ name, email, subject, message }, 2);
         const elapsed = Date.now() - start;
 
-        // Show headers (CORS / origin) if helpful
-        const allowOrigin = result.respHeaders.get('Access-Control-Allow-Origin') || 'n/a';
-        metaEl.textContent = `Status: ${result.status} • CORS Allow-Origin: ${allowOrigin} • ${elapsed}ms`;
+        const allowOrigin = res.respHeaders && res.respHeaders.get ? (res.respHeaders.get('Access-Control-Allow-Origin') || 'n/a') : 'n/a';
+        metaEl.textContent = `HTTP ${res.status} • CORS Allow-Origin: ${allowOrigin} • ${elapsed}ms`;
 
-        if (result.ok) {
-          // Try to read returned id if present
-          const id = result.data && (result.data.id || result.data.ID || result.data.Id) ? (result.data.id || result.data.ID || result.data.Id) : null;
+        if (res.ok) {
+          const id = res.data && (res.data.id || res.data.ID || res.data.Id) ? (res.data.id || res.data.ID || res.data.Id) : null;
           setStatus('Message sent ✓' + (id ? ` (id: ${id})` : ''), 'success');
-          // clear form optionally
-          document.getElementById('name').value = '';
-          document.getElementById('email').value = '';
-          document.getElementById('message').value = '';
+
+          // clear form
+          document.getElementById('name').value='';
+          document.getElementById('email').value='';
+          document.getElementById('subject').value='';
+          document.getElementById('message').value='';
         } else {
-          // Non-2xx responses
-          console.error('Server returned non-OK response', result);
-          const errMsg = (result.data && result.data.error) ? result.data.error : `Status ${result.status}`;
-          setStatus('Failed to send — server returned error: ' + errMsg, 'error');
+          const errMsg = (res.data && res.data.error) ? res.data.error : `Status ${res.status}`;
+          setStatus('Failed to send — server returned: ' + errMsg, 'error');
+
+          if (allowOrigin !== 'n/a' && allowOrigin !== window.location.origin && allowOrigin !== '*') {
+            metaEl.textContent += `\nCORS mismatch: server returned ${allowOrigin} but this page origin is ${window.location.origin}. Update API CORS.`;
+          }
         }
       } catch (err) {
-        // Network / CORS / timeout
-        console.error('Request failed', err);
-
+        console.error(err);
         if (err.name === 'AbortError') {
           setStatus('Failed to send — request timed out.', 'error');
         } else {
-          // Most likely CORS or network problem
-          setStatus('Failed to send — network/CORS error (open devtools) .', 'error');
+          setStatus('Failed to send — network/CORS error (open devtools).', 'error');
+          metaEl.textContent = `Error: ${err.message || err}`;
         }
-        metaEl.textContent = `Error: ${err.message || String(err)}`;
       } finally {
+        spinner.style.display = 'none';
         sendBtn.disabled = false;
       }
+    });
+
+    // small UX: submit with Ctrl+Enter when focus is in message
+    document.getElementById('message').addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.key === 'Enter') sendBtn.click();
     });
   </script>
 </body>
