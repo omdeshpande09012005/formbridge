@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: FormBridge backend - SAM template (CORS enabled, reserved env names fixed)
+Description: FormBridge backend - SAM template (CORS via Serverless::Api, reserved env fixed)
 
 Globals:
   Function:
@@ -14,6 +14,16 @@ Parameters:
     Default: contact-form-submissions
 
 Resources:
+  # Create a Serverless API with CORS configuration
+  ServerlessRestApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        AllowOrigins: "'*'"                         # dev: allow all origins. Replace with your Netlify domain to restrict.
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowMethods: "'POST,OPTIONS'"
+
   ContactTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -37,7 +47,6 @@ Resources:
           DDB_TABLE: !Ref DDBTableName
           SES_SENDER: "no-reply@yourdomain.com"
           SES_RECIPIENT: "admin@yourdomain.com"
-          # use a custom env name instead of the reserved AWS_REGION
           APP_REGION: !Ref "AWS::Region"
       Policies:
         - Version: "2012-10-17"
@@ -49,22 +58,16 @@ Resources:
             - Effect: Allow
               Action:
                 - ses:SendEmail
-              Resource: "*"   # SES resource ARNs are complicated; you can scope to verified identities later
+              Resource: "*"
       Events:
         ContactApi:
           Type: Api
           Properties:
+            RestApiId: !Ref ServerlessRestApi   # attach to the API resource configured above
             Path: /submit
             Method: post
-            Cors:
-              # For development allow all origins. Replace '*' with your Netlify domain to restrict.
-              AllowOrigin: "'*'"
-              # Allowed methods (POST + OPTIONS preflight)
-              AllowMethods: "'POST,OPTIONS'"
-              # Common headers used by browsers + any custom headers you need
-              AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
 
 Outputs:
   ApiUrl:
-    Description: "API Gateway endpoint (local via SAM or when deployed)"
+    Description: "API Gateway endpoint"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/submit"
