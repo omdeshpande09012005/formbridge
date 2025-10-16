@@ -1,4 +1,4 @@
-name: CI - build & test
+name: CI - build & test & deploy
 
 on:
   push:
@@ -14,10 +14,10 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.9
+      - name: Set up Python 3.11
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.11'
 
       - name: Install system prerequisites
         run: |
@@ -28,17 +28,14 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install aws-sam-cli
+          # install backend requirements (if present)
           if [ -f backend/requirements.txt ]; then pip install -r backend/requirements.txt; fi
 
-      - name: Run tests (none by default)
-        run: |
-          echo "No tests configured. Add pytest and tests/ if you want unit tests."
-
-      - name: Build SAM application
+      - name: Build SAM application (containerized)
         working-directory: backend
         run: |
-          sam --version
-          sam build
+          # build with container to match runtime precisely
+          sam build --use-container
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -54,10 +51,10 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.9
+      - name: Set up Python 3.11
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.11'
 
       - name: Install AWS SAM CLI
         run: |
@@ -70,12 +67,9 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
         run: |
-          sam --version
           sam deploy --stack-name formbridge-stack \
                      --resolve-s3 \
                      --capabilities CAPABILITY_IAM \
                      --no-confirm-changeset \
-                     --no-fail-on-empty-changeset \
-                     --region ${{ secrets.AWS_REGION }}
+                     --no-fail-on-empty-changeset
