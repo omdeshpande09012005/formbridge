@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: FormBridge backend - local SAM template
+Description: FormBridge backend - SAM template (fixed reserved env names)
 
 Globals:
   Function:
@@ -37,7 +37,8 @@ Resources:
           DDB_TABLE: !Ref DDBTableName
           SES_SENDER: "no-reply@yourdomain.com"
           SES_RECIPIENT: "admin@yourdomain.com"
-          AWS_REGION: !Ref "AWS::Region"
+          # use a custom env name instead of the reserved AWS_REGION
+          APP_REGION: !Ref "AWS::Region"
       Policies:
         - Version: "2012-10-17"
           Statement:
