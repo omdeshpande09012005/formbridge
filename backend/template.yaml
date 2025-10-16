@@ -1,0 +1,62 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: FormBridge backend - local SAM template
+
+Globals:
+  Function:
+    Timeout: 30
+    Runtime: python3.9
+    MemorySize: 256
+
+Parameters:
+  DDBTableName:
+    Type: String
+    Default: contact-form-submissions
+
+Resources:
+  ContactTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref DDBTableName
+      AttributeDefinitions:
+        - AttributeName: submissionId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: submissionId
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  ContactFormFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: contactFormProcessor
+      Handler: contact_form_lambda.lambda_handler
+      CodeUri: .
+      Environment:
+        Variables:
+          DDB_TABLE: !Ref DDBTableName
+          SES_SENDER: "no-reply@yourdomain.com"
+          SES_RECIPIENT: "admin@yourdomain.com"
+          AWS_REGION: !Ref "AWS::Region"
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:PutItem
+              Resource: !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DDBTableName}
+            - Effect: Allow
+              Action:
+                - ses:SendEmail
+              Resource: "*"   # SES resource ARNs are complicated; you can scope to verified identities later
+      Events:
+        ContactApi:
+          Type: Api
+          Properties:
+            Path: /submit
+            Method: post
+
+Outputs:
+  ApiUrl:
+    Description: "API Gateway endpoint (local via SAM or when deployed)"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/submit"

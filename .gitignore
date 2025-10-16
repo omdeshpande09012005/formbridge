@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtualenv
+.venv/
+venv/
+ENV/
+env.bak/
+
+# SAM build/artifacts
+.aws-sam/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Local env files
+*.env
+env.json
