@@ -48,6 +48,11 @@ export default function (data) {
       'Content-Type': 'application/json',
     };
 
+    // Add API key header
+    if (API_KEY) {
+      headers['X-Api-Key'] = API_KEY;
+    }
+
     // Add HMAC signature if enabled
     if (HMAC_ENABLED && HMAC_SECRET) {
       const timestamp = Math.floor(Date.now() / 1000);
@@ -55,10 +60,6 @@ export default function (data) {
       const signature = crypto.hmac('sha256', HMAC_SECRET, message, 'hex');
       headers['X-HMAC-Timestamp'] = timestamp.toString();
       headers['X-HMAC-Signature'] = signature;
-    }
-
-    if (API_KEY) {
-      headers['Authorization'] = 'Bearer ' + API_KEY;
     }
 
     const res = http.post(BASE_URL + '/submit', payload, { headers });
