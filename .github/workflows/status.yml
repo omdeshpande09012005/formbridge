@@ -1,0 +1,176 @@
+name: FormBridge Status Check
+
+on:
+  schedule:
+    # Run every 15 minutes
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+    # Allow manual trigger
+
+env:
+  ENDPOINT: https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod/analytics
+  REGION: ap-south-1
+  MAX_HISTORY_ENTRIES: 200
+
+jobs:
+  status-check:
+    runs-on: ubuntu-latest
+    # Protect on forks - only run on main repository
+    if: github.repository == 'omdeshpande09012005/formbridge'
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Perform health check
+        id: health-check
+        run: |
+          set +e  # Don't exit on error
+          
+          echo "🔍 Pinging API endpoint: ${{ env.ENDPOINT }}"
+          
+          # Measure latency and capture response
+          START_TIME=$(date +%s%N)
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            -X POST "${{ env.ENDPOINT }}" \
+            -H "X-Api-Key: ${{ secrets.STATUS_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{"action":"analytics","test":true}' \
+            --max-time 10 \
+            --connect-timeout 5)
+          
+          END_TIME=$(date +%s%N)
+          
+          # Extract HTTP code (last line)
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          
+          # Calculate latency in milliseconds
+          LATENCY_MS=$(( (END_TIME - START_TIME) / 1000000 ))
+          
+          # Validate HTTP code
+          if ! [[ "$HTTP_CODE" =~ ^[0-9]{3}$ ]]; then
+            HTTP_CODE=0
+            LATENCY_MS=$(( (END_TIME - START_TIME) / 1000000 ))
+          fi
+          
+          echo "✓ HTTP Code: $HTTP_CODE"
+          echo "✓ Latency: ${LATENCY_MS}ms"
+          
+          # Determine status based on thresholds
+          if [ "$HTTP_CODE" = "200" ] && [ "$LATENCY_MS" -lt 700 ]; then
+            STATUS="UP"
+          elif [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "429" ]; then
+            STATUS="DEGRADED"
+          else
+            STATUS="DOWN"
+          fi
+          
+          echo "✓ Status: $STATUS"
+          
+          # Output for use in next steps
+          echo "http_code=$HTTP_CODE" >> $GITHUB_OUTPUT
+          echo "latency_ms=$LATENCY_MS" >> $GITHUB_OUTPUT
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+
+      - name: Update status.json
+        env:
+          HTTP_CODE: ${{ steps.health-check.outputs.http_code }}
+          LATENCY_MS: ${{ steps.health-check.outputs.latency_ms }}
+          STATUS: ${{ steps.health-check.outputs.status }}
+        run: |
+          # Install jq for JSON processing
+          sudo apt-get update && sudo apt-get install -y jq > /dev/null 2>&1
+          
+          # Current UTC timestamp
+          CURRENT_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          
+          # Create new history entry
+          NEW_ENTRY=$(cat <<EOF
+          {
+            "t": "$CURRENT_TIME",
+            "code": ${{ env.HTTP_CODE }},
+            "lat": ${{ env.LATENCY_MS }},
+            "s": "${{ env.STATUS }}"
+          }
+          EOF
+          )
+          
+          # Path to status file
+          STATUS_FILE="docs/status/status.json"
+          
+          # Read existing status data
+          if [ -f "$STATUS_FILE" ]; then
+            STATUS_DATA=$(cat "$STATUS_FILE")
+          else
+            STATUS_DATA='{"updated_at":"2025-01-01T00:00:00Z","endpoint":"${{ env.ENDPOINT }}","region":"${{ env.REGION }}","status":"UNKNOWN","http_code":0,"latency_ms":0,"history":[]}'
+          fi
+          
+          # Update status data
+          UPDATED_DATA=$(echo "$STATUS_DATA" | jq \
+            --argjson new_entry "$NEW_ENTRY" \
+            --arg current_time "$CURRENT_TIME" \
+            --arg status "${{ env.STATUS }}" \
+            --arg http_code "${{ env.HTTP_CODE }}" \
+            --arg latency_ms "${{ env.LATENCY_MS }}" \
+            '
+            .updated_at = $current_time |
+            .status = $status |
+            .http_code = ($http_code | tonumber) |
+            .latency_ms = ($latency_ms | tonumber) |
+            .history += [$new_entry] |
+            .history |= .[-(env.MAX_HISTORY_ENTRIES | tonumber):]
+            ')
+          
+          # Write updated status
+          echo "$UPDATED_DATA" | jq '.' > "$STATUS_FILE"
+          
+          echo "✓ Updated $STATUS_FILE"
+          cat "$STATUS_FILE" | jq '.'
+
+      - name: Check for changes
+        id: git-check
+        run: |
+          git diff --exit-code docs/status/status.json
+          if [ $? -eq 0 ]; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "📝 Status file changed, will commit"
+          fi
+
+      - name: Commit changes
+        if: steps.git-check.outputs.has_changes == 'true'
+        run: |
+          git config user.name "FormBridge Status Bot"
+          git config user.email "actions@github.com"
+          
+          # Get current status for commit message
+          STATUS=$(jq -r '.status' docs/status/status.json)
+          HTTP_CODE=$(jq -r '.http_code' docs/status/status.json)
+          LATENCY=$(jq -r '.latency_ms' docs/status/status.json)
+          
+          git add docs/status/status.json
+          
+          git commit -m "chore(status): update health check - $STATUS ($HTTP_CODE, ${LATENCY}ms)"
+
+      - name: Push changes
+        if: steps.git-check.outputs.has_changes == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+
+      - name: Summary
+        run: |
+          echo "### 📊 FormBridge Status Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Status** | ${{ steps.health-check.outputs.status }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **HTTP Code** | ${{ steps.health-check.outputs.http_code }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Latency** | ${{ steps.health-check.outputs.latency_ms }}ms |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Timestamp** | $(date -u) |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Endpoint** | \`${{ env.ENDPOINT }}\` |" >> $GITHUB_STEP_SUMMARY

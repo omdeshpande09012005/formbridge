@@ -1,0 +1,43 @@
+{
+  "timestamp": "2025-11-05T19:05:42.590Z",
+  "environment": "local",
+  "results": {
+    "passed": 2,
+    "failed": 3,
+    "skipped": 4,
+    "tests": [
+      {
+        "name": "sanity_config",
+        "status": "PASS",
+        "duration": 0,
+        "info": ""
+      },
+      {
+        "name": "api_connectivity",
+        "status": "PASS",
+        "duration": 8,
+        "info": ""
+      },
+      {
+        "name": "submit",
+        "status": "FAIL",
+        "duration": 15004,
+        "info": "Request timeout"
+      },
+      {
+        "name": "analytics",
+        "status": "FAIL",
+        "duration": 15014,
+        "info": "Request timeout"
+      },
+      {
+        "name": "export",
+        "status": "FAIL",
+        "duration": 3,
+        "info": "Status 403"
+      }
+    ],
+    "startTime": 1762369512555
+  },
+  "url": "http://127.0.0.1:3000"
+}

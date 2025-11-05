@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog - FormBridge</title>
+  <meta name="description" content="Tips, tricks, and insights for form management and user engagement.">
+  <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/site.css">
+</head>
+<body class="bg-white text-gray-900">
+  <nav class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center gap-2">
+          <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          <a href="../index.html" data-internal class="text-xl font-bold">FormBridge</a>
+        </div>
+        <div class="hidden md:flex gap-8"><a href="../index.html" data-internal class="hover:text-blue-600">Home</a><a href="../solutions.html" data-internal class="hover:text-blue-600">Solutions</a><a href="../pricing.html" data-internal class="hover:text-blue-600">Pricing</a><a href="../docs.html" data-internal class="hover:text-blue-600">Docs</a><a href="../contact.html" data-internal class="bg-blue-600 text-white px-4 py-2 rounded-lg">Get Started</a></div>
+        <button id="mobile-menu-btn" class="md:hidden p-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+      <div id="mobile-menu" class="hidden md:hidden pb-4 space-y-2">
+        <a href="../index.html" data-internal class="block hover:text-blue-600 py-2">Home</a>
+        <a href="../solutions.html" data-internal class="block hover:text-blue-600 py-2">Solutions</a>
+        <a href="../pricing.html" data-internal class="block hover:text-blue-600 py-2">Pricing</a>
+        <a href="../docs.html" data-internal class="block hover:text-blue-600 py-2">Docs</a>
+        <a href="../contact.html" data-internal class="block bg-blue-600 text-white px-4 py-2 rounded-lg">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="bg-gradient-to-r from-blue-50 to-purple-50 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-4xl font-bold mb-4">FormBridge Blog</h1>
+      <p class="text-xl text-gray-600">Tips, strategies, and insights for better form management</p>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-24">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="space-y-8 card-stagger">
+        <a href="sample-post.html" data-internal class="card p-8 border border-gray-200 rounded-lg hover:shadow-lg transition">
+          <span class="text-sm text-gray-500">March 15, 2025</span>
+          <h2 class="text-2xl font-bold mt-2 mb-2">Getting Started with FormBridge: Best Practices</h2>
+          <p class="text-gray-600 mb-4">Learn the essentials of setting up your first form, from configuration to collecting first submissions.</p>
+          <span class="text-blue-600 font-semibold">Read More →</span>
+        </a>
+
+        <a href="sample-post.html" data-internal class="card p-8 border border-gray-200 rounded-lg hover:shadow-lg transition">
+          <span class="text-sm text-gray-500">March 10, 2025</span>
+          <h2 class="text-2xl font-bold mt-2 mb-2">Securing Your Forms with HMAC Signatures</h2>
+          <p class="text-gray-600 mb-4">Deep dive into HMAC-SHA256 signing, request verification, and preventing unauthorized access.</p>
+          <span class="text-blue-600 font-semibold">Read More →</span>
+        </a>
+
+        <a href="sample-post.html" data-internal class="card p-8 border border-gray-200 rounded-lg hover:shadow-lg transition">
+          <span class="text-sm text-gray-500">March 5, 2025</span>
+          <h2 class="text-2xl font-bold mt-2 mb-2">Webhook Integrations: Real-Time Form Processing</h2>
+          <p class="text-gray-600 mb-4">Automate workflows by connecting FormBridge webhooks to your backend services and third-party tools.</p>
+          <span class="text-blue-600 font-semibold">Read More →</span>
+        </a>
+
+        <a href="sample-post.html" data-internal class="card p-8 border border-gray-200 rounded-lg hover:shadow-lg transition">
+          <span class="text-sm text-gray-500">February 28, 2025</span>
+          <h2 class="text-2xl font-bold mt-2 mb-2">Scaling from Hobbyist to Production</h2>
+          <p class="text-gray-600 mb-4">How to grow your form processing infrastructure as your business scales, with tips on rate limiting and SLA.</p>
+          <span class="text-blue-600 font-semibold">Read More →</span>
+        </a>
+
+        <a href="sample-post.html" data-internal class="card p-8 border border-gray-200 rounded-lg hover:shadow-lg transition">
+          <span class="text-sm text-gray-500">February 20, 2025</span>
+          <h2 class="text-2xl font-bold mt-2 mb-2">Email Customization: Branding Your Submissions</h2>
+          <p class="text-gray-600 mb-4">Configure custom email templates, subject lines, and branding to match your organization's identity.</p>
+          <span class="text-blue-600 font-semibold">Read More →</span>
+        </a>
+
+        <a href="sample-post.html" data-internal class="card p-8 border border-gray-200 rounded-lg hover:shadow-lg transition">
+          <span class="text-sm text-gray-500">February 15, 2025</span>
+          <h2 class="text-2xl font-bold mt-2 mb-2">Analytics for Form Success: Measuring Engagement</h2>
+          <p class="text-gray-600 mb-4">Track submission rates, response times, and conversion metrics to optimize your forms.</p>
+          <span class="text-blue-600 font-semibold">Read More →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-gray-900 text-gray-300 py-12 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-4 gap-8 mb-8">
+        <div><h3 class="text-white font-semibold mb-4">Product</h3><ul class="space-y-2"><li><a href="../pricing.html" data-internal class="hover:text-white">Pricing</a></li><li><a href="../docs.html" data-internal class="hover:text-white">Docs</a></li></ul></div>
+        <div><h3 class="text-white font-semibold mb-4">Company</h3><ul class="space-y-2"><li><a href="../contact.html" data-internal class="hover:text-white">Contact</a></li></ul></div>
+        <div><h3 class="text-white font-semibold mb-4">Resources</h3><ul class="space-y-2"><li><a href="index.html" data-internal class="hover:text-white">Blog</a></li></ul></div>
+        <div><h3 class="text-white font-semibold mb-4">Legal</h3><ul class="space-y-2"><li><a href="#" class="hover:text-white">Privacy</a></li></ul></div>
+      </div>
+      <div class="border-t border-gray-800 pt-8 text-center"><p>&copy; 2025 FormBridge. All rights reserved.</p></div>
+    </div>
+  </footer>
+
+  <script src="../js/config.example.js"></script>
+  <script src="../js/site.js"></script>
+</body>
+</html>

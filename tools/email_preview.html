@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FormBridge Email Template Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+
+        .control-panel h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #1a202c;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        .control-group {
+            margin-bottom: 16px;
+        }
+
+        .control-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 12px;
+            color: #4a5568;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .control-group input,
+        .control-group textarea,
+        .control-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #1a202c;
+        }
+
+        .control-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .control-group input:focus,
+        .control-group textarea:focus,
+        .control-group select:focus {
+            outline: none;
+            border-color: #6D28D9;
+            box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.1);
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6D28D9 0%, #EC4899 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #1a202c;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-copy {
+            grid-column: 1 / -1;
+            background: #f1f5f9;
+            color: #4a5568;
+        }
+
+        .btn-copy:hover {
+            background: #e2e8f0;
+        }
+
+        /* Preview Area */
+        .preview-container {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .preview-header h3 {
+            font-size: 16px;
+            color: #1a202c;
+        }
+
+        .preview-controls {
+            display: flex;
+            gap: 10px;
+            font-size: 12px;
+        }
+
+        .preview-controls label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #4a5568;
+            cursor: pointer;
+        }
+
+        .preview-controls input[type="checkbox"] {
+            cursor: pointer;
+            width: auto;
+        }
+
+        .preview-frame {
+            background: #f8f9fa;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            padding: 16px;
+            min-height: 600px;
+        }
+
+        .preview-frame iframe {
+            width: 100%;
+            border: none;
+            background: white;
+        }
+
+        /* Mobile preview */
+        .mobile-preview {
+            max-width: 375px;
+            margin: 0 auto;
+        }
+
+        .mobile-preview .preview-frame {
+            border: 8px solid #1a202c;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* Desktop preview */
+        .desktop-preview .preview-frame {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Status messages */
+        .status {
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin-top: 16px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .status.show {
+            display: block;
+        }
+
+        .status.success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .control-panel {
+                max-height: none;
+            }
+        }
+
+        /* Code display */
+        .code-display {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 12px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 11px;
+            line-height: 1.5;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 12px;
+            word-break: break-all;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-left: 4px solid #3b82f6;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #1e40af;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Control Panel (Left) -->
+        <div class="control-panel">
+            <h2>📧 Email Customizer</h2>
+
+            <div class="info-box">
+                ℹ️ Edit fields below to customize the email template. Changes update in real-time on the right.
+            </div>
+
+            <form id="emailForm">
+                <!-- Submitter Info -->
+                <div class="control-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" value="Sarah Chen" placeholder="Submitter name">
+                </div>
+
+                <div class="control-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" value="sarah.chen@techcorp.com" placeholder="Submitter email">
+                </div>
+
+                <div class="control-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" placeholder="Full message text...">Hello FormBridge team!
+
+I'm very impressed with your serverless form backend solution. We're currently evaluating several providers for our new customer feedback system, and FormBridge seems like a perfect fit.
+
+A few questions:
+1. Do you offer enterprise support?
+2. What's the maximum message size?
+3. Can we integrate with Slack?
+
+Looking forward to hearing from you!</textarea>
+                </div>
+
+                <!-- Form Details -->
+                <div class="control-group">
+                    <label for="formId">Form ID</label>
+                    <input type="text" id="formId" value="website-contact" placeholder="e.g., website-contact">
+                </div>
+
+                <div class="control-group">
+                    <label for="page">Page URL</label>
+                    <input type="text" id="page" value="https://formbridge.dev/contact" placeholder="Page URL where form was submitted">
+                </div>
+
+                <!-- Meta Info -->
+                <div class="control-group">
+                    <label for="submissionId">Submission ID</label>
+                    <input type="text" id="submissionId" value="sub_1234567890abcdef" placeholder="Unique submission ID">
+                </div>
+
+                <div class="control-group">
+                    <label for="timestamp">Timestamp</label>
+                    <input type="datetime-local" id="timestamp">
+                </div>
+
+                <div class="control-group">
+                    <label for="ipAddress">IP Address</label>
+                    <input type="text" id="ipAddress" value="203.0.113.42" placeholder="IPv4 or IPv6 address">
+                </div>
+
+                <div class="control-group">
+                    <label for="userAgent">User Agent</label>
+                    <input type="text" id="userAgent" value="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" placeholder="Browser user agent">
+                </div>
+
+                <!-- Brand Info -->
+                <div class="control-group">
+                    <label for="brandName">Brand Name</label>
+                    <input type="text" id="brandName" value="FormBridge" placeholder="Your brand name">
+                </div>
+
+                <div class="control-group">
+                    <label for="brandLogo">Brand Logo URL</label>
+                    <input type="url" id="brandLogo" value="https://omdeshpande09012005.github.io/website/assets/logo.svg" placeholder="HTTPS URL to logo (SVG or PNG)">
+                </div>
+
+                <div class="control-group">
+                    <label for="brandColor">Brand Color (Hex)</label>
+                    <input type="color" id="brandColor" value="#6D28D9" title="Primary brand color">
+                </div>
+
+                <div class="control-group">
+                    <label for="dashboardUrl">Dashboard URL</label>
+                    <input type="url" id="dashboardUrl" value="https://omdeshpande09012005.github.io/docs/" placeholder="Link for 'Open Dashboard' button">
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn-primary" onclick="updatePreview()">🔄 Update Preview</button>
+                    <button type="button" class="btn-secondary" onclick="loadSampleData()">📝 Load Sample</button>
+                    <button type="button" class="btn-copy" onclick="copyHtmlToClipboard()">📋 Copy HTML</button>
+                    <button type="button" class="btn-secondary" onclick="downloadHtml()">⬇️ Download HTML</button>
+                </div>
+
+                <div id="status" class="status"></div>
+            </form>
+
+            <div class="code-display" id="htmlCode" style="display: none;"></div>
+        </div>
+
+        <!-- Preview Area (Right) -->
+        <div class="preview-container">
+            <div class="preview-header">
+                <h3>📬 Email Preview</h3>
+                <div class="preview-controls">
+                    <label>
+                        <input type="radio" name="viewMode" value="mobile" onchange="updatePreviewMode()"> 📱 Mobile
+                    </label>
+                    <label>
+                        <input type="radio" name="viewMode" value="desktop" checked onchange="updatePreviewMode()"> 🖥️ Desktop
+                    </label>
+                    <label>
+                        <input type="checkbox" id="darkMode" onchange="updatePreview()"> 🌙 Dark
+                    </label>
+                </div>
+            </div>
+            <div class="preview-frame desktop-preview" id="previewContainer">
+                <iframe id="previewIframe" sandbox="allow-same-origin"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set default timestamp to now
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        document.getElementById('timestamp').value = now.toISOString().slice(0, 16);
+
+        let htmlTemplate = '';
+
+        // Load the email template
+        async function loadTemplate() {
+            try {
+                const response = await fetch('base.html');
+                if (!response.ok) throw new Error('Could not load template');
+                htmlTemplate = await response.text();
+                updatePreview();
+            } catch (error) {
+                showStatus('Error loading template: ' + error.message, 'error');
+                console.error(error);
+            }
+        }
+
+        function getFormData() {
+            const timestamp = new Date(document.getElementById('timestamp').value);
+            const message = document.getElementById('message').value;
+            const excerpt = message
+                .substring(0, 240)
+                .replace(/\n/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim() + (message.length > 240 ? '...' : '');
+
+            return {
+                name: document.getElementById('name').value || 'Anonymous',
+                email: document.getElementById('email').value || 'contact@example.com',
+                message: message,
+                excerpt: excerpt,
+                form_id: document.getElementById('formId').value || 'website-contact',
+                page: document.getElementById('page').value || '#',
+                id: document.getElementById('submissionId').value || 'sub_unknown',
+                ts: timestamp.toISOString(),
+                ip: document.getElementById('ipAddress').value || '0.0.0.0',
+                ua: document.getElementById('userAgent').value || 'Unknown',
+                brand_name: document.getElementById('brandName').value || 'FormBridge',
+                brand_logo_url: document.getElementById('brandLogo').value || 'https://omdeshpande09012005.github.io/website/assets/logo.svg',
+                brand_primary_hex: document.getElementById('brandColor').value || '#6D28D9',
+                dashboard_url: document.getElementById('dashboardUrl').value || '#'
+            };
+        }
+
+        function replacePlaceholders(html, data) {
+            let result = html;
+            for (const [key, value] of Object.entries(data)) {
+                const placeholder = `{{${key}}}`;
+                result = result.replace(new RegExp(placeholder, 'g'), escapeHtml(String(value)));
+            }
+            return result;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function updatePreview() {
+            if (!htmlTemplate) {
+                showStatus('Template not loaded yet. Retrying...', 'error');
+                loadTemplate();
+                return;
+            }
+
+            const data = getFormData();
+            let html = replacePlaceholders(htmlTemplate, data);
+
+            // Apply dark mode if selected
+            if (document.getElementById('darkMode').checked) {
+                html = html.replace(
+                    '@media (prefers-color-scheme: dark)',
+                    '@media (prefers-color-scheme: dark), .dark-mode'
+                );
+                html = html.replace(
+                    '<body>',
+                    '<body class="dark-mode" style="background: #0f172a; color: #e2e8f0;">'
+                );
+            }
+
+            // Update iframe
+            const iframe = document.getElementById('previewIframe');
+            iframe.srcdoc = html;
+
+            showStatus('Preview updated ✓', 'success');
+        }
+
+        function updatePreviewMode() {
+            const mode = document.querySelector('input[name="viewMode"]:checked').value;
+            const container = document.getElementById('previewContainer');
+            
+            container.classList.remove('mobile-preview', 'desktop-preview');
+            container.classList.add(mode === 'mobile' ? 'mobile-preview' : 'desktop-preview');
+        }
+
+        function loadSampleData() {
+            document.getElementById('name').value = 'John Developer';
+            document.getElementById('email').value = 'john@devstartup.io';
+            document.getElementById('message').value = 'Hi FormBridge!\n\nWe love your solution. Can we integrate it with our API? We handle ~50k submissions/month.\n\nBest,\nJohn';
+            updatePreview();
+            showStatus('Sample data loaded ✓', 'success');
+        }
+
+        function copyHtmlToClipboard() {
+            if (!htmlTemplate) {
+                showStatus('Template not ready', 'error');
+                return;
+            }
+
+            const data = getFormData();
+            const html = replacePlaceholders(htmlTemplate, data);
+
+            navigator.clipboard.writeText(html).then(() => {
+                showStatus('HTML copied to clipboard ✓', 'success');
+            }).catch(() => {
+                showStatus('Failed to copy (use Download instead)', 'error');
+            });
+        }
+
+        function downloadHtml() {
+            if (!htmlTemplate) {
+                showStatus('Template not ready', 'error');
+                return;
+            }
+
+            const data = getFormData();
+            const html = replacePlaceholders(htmlTemplate, data);
+
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/html;charset=utf-8,' + encodeURIComponent(html));
+            element.setAttribute('download', 'formbridge_email_preview.html');
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+
+            showStatus('HTML downloaded ✓', 'success');
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = 'status show ' + type;
+            
+            if (type === 'success') {
+                setTimeout(() => status.classList.remove('show'), 3000);
+            }
+        }
+
+        // Initial load
+        loadTemplate();
+
+        // Auto-update on field change
+        document.querySelectorAll('input, textarea').forEach(el => {
+            el.addEventListener('change', updatePreview);
+            el.addEventListener('input', () => {
+                clearTimeout(el.debounce);
+                el.debounce = setTimeout(updatePreview, 500);
+            });
+        });
+    </script>
+</body>
+</html>

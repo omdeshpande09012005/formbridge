@@ -31,7 +31,7 @@ POST https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod/submit
 | Lambda Role | ✅ Configured | DynamoDB + SES permissions attached |
 | Environment Variables | ✅ Set | DDB_TABLE, SES_SENDER, SES_RECIPIENTS, FRONTEND_ORIGIN |
 | API Gateway | ✅ Live | `/submit` endpoint POST + OPTIONS |
-| CORS | ✅ Enabled | Origin: `https://omdeshpande09012005.github.io` |
+| CORS | ✅ Enabled | Origin: `https://omdeshpande09012005.github.io/formbridge/` |
 | SES | ✅ Verified | 6 email identities ready |
 | Tests | ✅ Passed | Direct Lambda + API Gateway both 200 OK |
 | Data Storage | ✅ Verified | 2 submissions in DynamoDB |
@@ -176,7 +176,7 @@ git commit -m "Add analytics dashboard configuration"
 git push origin main
 
 # 6. Access dashboard on GitHub Pages
-# https://omdeshpande09012005.github.io/docs/dashboard/
+# https://omdeshpande09012005.github.io/formbridge/dashboard/
 ```
 
 ### Files
@@ -250,7 +250,7 @@ Complete API documentation, Postman collection, and Swagger UI for easy integrat
 ### 🚀 Getting Started
 
 #### Option 1: View Swagger UI Online
-Visit: `https://omdeshpande09012005.github.io/swagger.html`
+Visit: `https://omdeshpande09012005.github.io/formbridge/swagger.html`
 
 #### Option 2: Import Postman Collection
 1. Download [Postman](https://www.postman.com/downloads/)
@@ -403,7 +403,7 @@ aws dynamodb query \
 DDB_TABLE = contact-form-submissions-v2
 SES_SENDER = aayush.das@mitwpu.edu.in
 SES_RECIPIENTS = aayush.das@mitwpu.edu.in
-FRONTEND_ORIGIN = https://omdeshpande09012005.github.io
+FRONTEND_ORIGIN = https://omdeshpande09012005.github.io/formbridge/
 ```
 
 ### AWS Resources
@@ -854,6 +854,315 @@ See `docs/EXPORT_README.md` for:
 - Integration examples (JavaScript, bash, Python)
 - Troubleshooting guide (403, 401, empty CSV, encoding)
 - Use case walkthroughs
+
+---
+
+## 📊 Performance & Load Testing
+
+FormBridge includes a comprehensive k6 load testing suite to validate stability, latency, and throttling behavior under load.
+
+### Quick Start
+
+```bash
+# Install k6
+# macOS: brew install k6
+# Linux: sudo apt-get install k6
+# Windows: choco install k6
+
+# Configure test environment
+cp loadtest/.env.example loadtest/.env
+# Edit loadtest/.env with your BASE_URL and credentials
+
+# Run smoke test (1-2 VUs, 1 min)
+k6 run loadtest/submit_smoke.js
+
+# View HTML report
+open loadtest/reports/results-submit_smoke-*.html
+```
+
+### Test Scenarios
+
+#### 1. Smoke Test (submit_smoke.js)
+**Purpose**: Quick sanity check suitable for CI/CD  
+**Profile**: 1–2 VUs ramping over 60 seconds  
+**SLOs**:
+- Success rate ≥ 99%
+- P95 latency < 600ms
+- P99 latency < 1000ms
+
+**Run**: `k6 run loadtest/submit_smoke.js`
+
+#### 2. Spike Test (submit_spike.js)
+**Purpose**: Validate stability under heavy load and throttling  
+**Profile**: 0→50 VUs over 30s, hold 60s, ramp down 30s  
+**SLOs**:
+- Success rate ≥ 99% (429 counted as success)
+- P95 latency < 600ms
+- No elevated 5xx errors
+- 429 responses visible when throttling kicks in
+
+**Expected Behavior**:
+- Initially: All 2xx responses
+- Under Load: Mix of 2xx and 429 responses (API Gateway throttling)
+- Pattern: 429 rate increases with concurrent load
+
+**Run**: `k6 run loadtest/submit_spike.js`
+
+#### 3. Analytics Read Test (analytics_read.js)
+**Purpose**: Verify read endpoint stays fast during write spike  
+**Profile**: 5 VUs constant for 2 minutes  
+**SLOs**:
+- Success rate ≥ 99%
+- P95 latency < 300ms (stricter than writes)
+- P99 latency < 500ms
+
+**Run**: `k6 run loadtest/analytics_read.js`
+
+### Understanding Response Codes
+
+| Code | Meaning | Action |
+|------|---------|--------|
+| **200** | Success | Expected for all form submissions |
+| **429** | Too Many Requests | Expected under spike (API Gateway throttling); indicates rate limiting is working |
+| **4xx** | Client Error | Check request format or authentication headers |
+| **5xx** | Server Error | Check CloudWatch logs: `/aws/lambda/contactFormProcessor` |
+
+### Interpreting Results
+
+**Green Indicators** ✅
+- P95 < 600ms during spike test
+- Success rate ≥ 99%
+- 429 responses visible during ramp-up
+
+**Yellow Warnings** ⚠️
+- P95 600–800ms: Monitor but likely acceptable
+- Success rate 95–99%: Investigate occasional failures
+
+**Red Alerts** 🔴
+- P95 > 800ms: Investigate Lambda cold start or database latency
+- Success rate < 95%: Check for persistent errors
+- Elevated 5xx errors: Lambda/SES issue (check CloudWatch)
+
+### CloudWatch Integration
+
+Monitor while load tests run:
+
+```bash
+# Watch Lambda logs in real-time
+aws logs tail /aws/lambda/contactFormProcessor --follow --region ap-south-1
+
+# Check API Gateway metrics (AWS Console)
+# CloudWatch → API Gateway → formbridge-api
+# Look for: 4XXError (includes 429), 5XXError, Latency
+```
+
+**Expected Patterns During Spike Test**:
+- 4XXError increases (due to 429 throttling)
+- 5XXError remains near zero
+- Latency spikes initially, then stabilizes
+
+### API Gateway Usage Plan & Throttling
+
+**Default Quota** (if no usage plan):
+- 10,000 requests per month
+- 500 requests per second burst
+
+**Throttling Behavior**:
+- When quota exceeded: API Gateway returns 429 "Too Many Requests"
+- This is normal; indicates rate limiting is protecting your backend
+- Lambda itself rarely throttles; Gateway throttles first
+
+**To Monitor**:
+```bash
+# Check current API Gateway metrics
+aws cloudwatch get-metric-statistics \
+  --namespace AWS/ApiGateway \
+  --metric-name 4XXError \
+  --dimensions Name=ApiName,Value=formbridge-api \
+  --start-time 2025-11-05T00:00:00Z \
+  --end-time 2025-11-05T23:59:59Z \
+  --period 3600 \
+  --statistics Sum \
+  --region ap-south-1
+```
+
+### Cost Implications
+
+**Per Load Test**:
+- Smoke test: ~10 requests × $0.0000035 = negligible
+- Spike test: ~5,000 requests × $0.0000035 = $0.02
+- Analytics read: ~600 requests × $0.0000035 = negligible
+
+**Monthly Budget** (with load testing):
+- Base: ~$0.45 (secrets management)
+- Testing: ~$1.00 (10 spike tests)
+- **Total: ~$1.45/month**
+
+### CI/CD Integration
+
+Smoke test runs automatically on every push to main.
+
+**GitHub Actions Workflow** (`.github/workflows/loadtest.yml`):
+- Installs k6
+- Runs 1-minute smoke test
+- Generates HTML/CSV reports
+- Uploads artifacts (viewable in GitHub Actions)
+
+**To Manually Trigger**:
+1. Go to GitHub → Actions → "Load Test (k6 Smoke Test)"
+2. Click "Run workflow"
+3. Select branch
+4. View logs and download artifacts
+
+**Secrets Required** (set in GitHub):
+- `LOADTEST_BASE_URL` (optional, defaults to production)
+- `LOADTEST_API_KEY` (if API authentication needed)
+
+### Local Testing
+
+**Windows Setup**:
+```powershell
+# Install k6
+choco install k6
+
+# Create .env file
+cp loadtest/.env.example loadtest/.env
+
+# Edit with production endpoint
+code loadtest/.env
+
+# Run smoke test
+k6 run loadtest/submit_smoke.js
+
+# Open report
+explorer loadtest/reports/results-submit_smoke-*.html
+```
+
+**macOS Setup**:
+```bash
+brew install k6
+cp loadtest/.env.example loadtest/.env
+export $(cat loadtest/.env | xargs)
+k6 run loadtest/submit_smoke.js
+open loadtest/reports/results-submit_smoke-*.html
+```
+
+**Report Artifacts**:
+- `loadtest/reports/results-{test_name}-{date}.html` (beautiful dashboard)
+- `loadtest/reports/results-{test_name}-{date}.csv` (metrics export)
+
+### Advanced Testing
+
+**Custom Payload Testing**:
+Edit test file to modify form data and test different scenarios
+
+**Thresholds (SLO Enforcement)**:
+Each test includes k6 thresholds. If SLOs are violated:
+- Exit code non-zero (CI/CD can fail)
+- See `export const options = { thresholds: {...} }` in test files
+
+**Realistic Load**:
+- Smoke: 1–2 users (CI sanity check)
+- Spike: 50 users (peak traffic simulation)
+- Analytics: 5 users (concurrent reads)
+
+### Troubleshooting
+
+**Issue**: "429 Too Many Requests" even during smoke test
+- **Cause**: Endpoint quota exceeded or throttled by API Gateway
+- **Solution**: Wait 1 hour or contact AWS
+
+**Issue**: "Connection refused" or timeout
+- **Cause**: Endpoint not running or unreachable
+- **Solution**: Verify BASE_URL in .env and endpoint is live
+
+**Issue**: Reports not generating
+- **Cause**: Permission issue on loadtest/reports directory
+- **Solution**: `mkdir -p loadtest/reports` and retry
+
+**Issue**: High latency (P95 > 1000ms)
+- **Cause**: Lambda cold start, database slow, or network lag
+- **Solution**: Run smoke test first to warm up Lambda
+
+### Documentation
+
+**Complete Load Testing Guide**: See `loadtest/README.md` for:
+- Detailed installation (all platforms)
+- Configuration instructions
+- SLO specifications
+- Report interpretation
+- Cost analysis
+- FAQ and troubleshooting
+
+---
+
+## 💰 Cost Controls (Guardrails)
+
+FormBridge includes automated cost protection with AWS Budgets, mandatory tagging, and safe teardown automation.
+
+### One-Minute Quickstart
+
+```bash
+# 1. Setup cost guardrails
+export REGION=ap-south-1
+export ALERT_EMAIL=ops@example.com
+export BUDGET_LIMIT=3.00
+bash scripts/setup-cost-guardrails.sh
+
+# 2. Confirm SNS subscription (check your email)
+
+# 3. Audit cost posture (weekly)
+bash scripts/verify-cost-posture.sh
+```
+
+### What You Get
+
+| Component | Details |
+|-----------|---------|
+| **AWS Budget** | Monthly limit with alerts at 50%, 80%, 100% |
+| **SNS Alerts** | Email notifications when thresholds hit |
+| **Tagging** | All resources tagged: `Project=FormBridge, Env=Prod, Owner=OmDeshpande` |
+| **Cost Auditor** | Read-only script for estimated costs, config validation, queue depth checks |
+| **Safe Teardown** | Interactive script with `--dry-run` and confirmation workflow |
+
+### Estimated Monthly Cost
+
+| Service | Volume | Cost |
+|---------|--------|------|
+| Lambda | 1M invocations | $0.20 |
+| API Gateway | 1M requests | $0.35 |
+| DynamoDB | On-demand | $0.50 |
+| SQS | 100K messages | $0.04 |
+| SES | 10K emails | ~$0.00 |
+| CloudWatch | Metrics/Logs | $0.50 |
+| **Total** | | **~$1.59** |
+
+**Recommended Budget**: $3.00 USD (includes safety buffer)
+
+### Key Scripts
+
+```bash
+# Setup budgets and tagging (idempotent, safe)
+bash scripts/setup-cost-guardrails.sh
+
+# Audit current configuration and costs
+bash scripts/verify-cost-posture.sh
+
+# Preview teardown (safe)
+bash scripts/teardown-formbridge.sh --dry-run
+
+# Actually delete infrastructure
+bash scripts/teardown-formbridge.sh --really-destroy
+```
+
+### Documentation
+
+**Full Guide**: See `docs/COST_GUARDRAILS.md` for:
+- Detailed budget configuration
+- DynamoDB and SQS verification
+- Recommended limits by tier
+- Troubleshooting cost overages
+- Console links and best practices
 
 ---
 

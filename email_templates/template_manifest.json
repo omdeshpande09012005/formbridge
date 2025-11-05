@@ -1,0 +1,131 @@
+{
+  "template_name": "formbridge_submission_notification",
+  "template_version": "1.0.0",
+  "created_at": "2025-11-05T00:00:00Z",
+  "description": "Branded HTML email notification for FormBridge contact form submissions",
+  
+  "subject_template": "[FormBridge] New submission on {{form_id}} — {{name}}",
+  
+  "required_placeholders": [
+    "form_id",
+    "name",
+    "email",
+    "message",
+    "excerpt",
+    "page",
+    "id",
+    "ts",
+    "ip",
+    "ua",
+    "dashboard_url",
+    "brand_name",
+    "brand_logo_url",
+    "brand_primary_hex"
+  ],
+  
+  "placeholder_descriptions": {
+    "form_id": "Unique identifier for the form (e.g., 'website-contact')",
+    "name": "Submitter's name (string, max 100 chars)",
+    "email": "Submitter's email address (valid email format)",
+    "message": "Full message body (string, variable length)",
+    "excerpt": "First ~240 characters of message with newlines stripped (preview in email)",
+    "page": "URL or page name where form was submitted",
+    "id": "Unique submission ID (e.g., 'sub_1234567890abcdef')",
+    "ts": "ISO 8601 timestamp when submission was received (e.g., '2025-11-05T14:30:00Z')",
+    "ip": "Submitter's IP address (IPv4 or IPv6)",
+    "ua": "Submitter's user agent string (browser/device info)",
+    "dashboard_url": "Link to analytics dashboard or documentation (HTTPS URL)",
+    "brand_name": "Brand display name (default: 'FormBridge')",
+    "brand_logo_url": "HTTPS URL to logo image, preferably SVG or PNG (must be publicly accessible)",
+    "brand_primary_hex": "Primary brand color in hex format (e.g., '#6D28D9')"
+  },
+  
+  "default_values": {
+    "brand_name": "FormBridge",
+    "brand_logo_url": "https://omdeshpande09012005.github.io/website/assets/logo.svg",
+    "brand_primary_hex": "#6D28D9",
+    "dashboard_url": "https://omdeshpande09012005.github.io/docs/"
+  },
+  
+  "email_format": {
+    "content_type": "text/html",
+    "charset": "UTF-8",
+    "encoding": "quoted-printable"
+  },
+  
+  "features": {
+    "responsive": true,
+    "mobile_friendly": true,
+    "dark_mode_support": true,
+    "outlook_compatible": true,
+    "inline_css": true,
+    "no_external_fonts": true,
+    "no_external_scripts": true
+  },
+  
+  "accessibility": {
+    "alt_text_for_logo": true,
+    "semantic_html": true,
+    "color_contrast": "WCAG AA",
+    "readable_font_sizes": true,
+    "tap_targets": ">44px recommended"
+  },
+  
+  "rendering_notes": {
+    "max_width": "600px",
+    "fallback_font_stack": "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif",
+    "gradient_support": "Supported in most modern email clients, graceful degradation for older clients",
+    "image_hosting": "All images must be HTTPS URLs hosted externally (recommend GitHub Pages or CDN)",
+    "local_development": "Use MailHog SMTP for local testing with full HTML rendering"
+  },
+  
+  "usage_examples": {
+    "python_context": {
+      "description": "Example context dict to pass to render_email_html()",
+      "example": {
+        "form_id": "website-contact",
+        "name": "John Doe",
+        "email": "john@example.com",
+        "message": "Hello, I'm interested in learning more about FormBridge. Can you tell me about enterprise features?",
+        "excerpt": "Hello, I'm interested in learning more about FormBridge. Can you tell me about enterprise fe...",
+        "page": "https://example.com/contact",
+        "id": "sub_1234567890abcdef",
+        "ts": "2025-11-05T14:30:00Z",
+        "ip": "192.0.2.1",
+        "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        "dashboard_url": "https://omdeshpande09012005.github.io/docs/",
+        "brand_name": "FormBridge",
+        "brand_logo_url": "https://omdeshpande09012005.github.io/website/assets/logo.svg",
+        "brand_primary_hex": "#6D28D9"
+      }
+    },
+    "ses_sendEmail": {
+      "description": "How to use in boto3 SES sendEmail call",
+      "code": "response = ses.send_email(\n  Source='noreply@example.com',\n  Destination={'ToAddresses': [recipient_email]},\n  Message={\n    'Subject': {'Data': 'New FormBridge Submission', 'Charset': 'UTF-8'},\n    'Body': {\n      'Html': {'Data': html_content, 'Charset': 'UTF-8'},\n      'Text': {'Data': plaintext_content, 'Charset': 'UTF-8'}\n    }\n  }\n)"
+    }
+  },
+  
+  "environment_variables": {
+    "BRAND_NAME": "Brand display name for emails (default: 'FormBridge')",
+    "BRAND_LOGO_URL": "HTTPS URL to brand logo (default: GitHub Pages asset)",
+    "BRAND_PRIMARY_HEX": "Primary brand color hex code (default: '#6D28D9')",
+    "DASHBOARD_URL": "URL for 'Open Dashboard' CTA (default: docs/dashboard)"
+  },
+  
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2025-11-05",
+      "changes": [
+        "Initial template release",
+        "Mobile-first responsive design",
+        "Dark mode support",
+        "Outlook compatibility",
+        "Inline CSS for SES delivery",
+        "Support for all submission metadata",
+        "Configurable brand colors and logo",
+        "Text fallback for accessibility"
+      ]
+    }
+  ]
+}

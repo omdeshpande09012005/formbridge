@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FormBridge Status</title>
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --muted: #9aa4b2;
+      --accent: #2dd4bf;
+      --accent-2: #2563eb;
+      --glass: rgba(255, 255, 255, 0.04);
+      --glass-2: rgba(255, 255, 255, 0.03);
+      --green: #10b981;
+      --amber: #f59e0b;
+      --red: #ef4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, #041025 0%, #071426 60%);
+      color: #e6eef6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.1s forwards;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .main-card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.015));
+      border-radius: 16px;
+      padding: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      box-shadow: 0 20px 50px rgba(2, 6, 23, 0.6);
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.2s forwards;
+    }
+
+    /* Status Badge */
+    .status-section {
+      text-align: center;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 28px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .status-badge.up {
+      background: rgba(16, 185, 129, 0.1);
+      border: 2px solid var(--green);
+      color: var(--green);
+      box-shadow: 0 0 30px rgba(16, 185, 129, 0.1);
+    }
+
+    .status-badge.degraded {
+      background: rgba(245, 158, 11, 0.1);
+      border: 2px solid var(--amber);
+      color: var(--amber);
+      box-shadow: 0 0 30px rgba(245, 158, 11, 0.1);
+    }
+
+    .status-badge.down {
+      background: rgba(239, 68, 68, 0.1);
+      border: 2px solid var(--red);
+      color: var(--red);
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.1);
+    }
+
+    .status-badge:hover {
+      transform: translateY(-2px);
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .status-badge.up .status-dot {
+      background: var(--green);
+    }
+
+    .status-badge.degraded .status-dot {
+      background: var(--amber);
+    }
+
+    .status-badge.down .status-dot {
+      background: var(--red);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .last-updated {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    /* Metrics Grid */
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .metric {
+      background: var(--glass);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .metric:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .metric-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent-2);
+      font-family: "Monaco", "Courier New", monospace;
+      word-break: break-all;
+    }
+
+    .metric-value.code {
+      font-size: 16px;
+      background: rgba(37, 99, 235, 0.1);
+      padding: 8px;
+      border-radius: 6px;
+      color: #7cc5ff;
+    }
+
+    .metric-value.region {
+      font-size: 14px;
+      background: rgba(45, 212, 191, 0.1);
+      padding: 6px 10px;
+      border-radius: 6px;
+      color: var(--accent);
+      display: inline-block;
+    }
+
+    /* History Chart */
+    .history-section {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .history-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+
+    .chart-container {
+      background: var(--glass);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      min-height: 100px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+      gap: 2px;
+    }
+
+    .chart-bar {
+      flex: 1;
+      height: 60px;
+      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      position: relative;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+
+    .chart-bar:hover {
+      opacity: 1;
+      transform: scaleY(1.1);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    }
+
+    .chart-bar.up {
+      background: linear-gradient(180deg, var(--green), rgba(16, 185, 129, 0.5));
+    }
+
+    .chart-bar.degraded {
+      background: linear-gradient(180deg, var(--amber), rgba(245, 158, 11, 0.5));
+    }
+
+    .chart-bar.down {
+      background: linear-gradient(180deg, var(--red), rgba(239, 68, 68, 0.5));
+    }
+
+    .chart-tooltip {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.9);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      margin-bottom: 8px;
+      transition: opacity 0.2s ease;
+      z-index: 10;
+    }
+
+    .chart-bar:hover .chart-tooltip {
+      opacity: 1;
+    }
+
+    .chart-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    /* Links Section */
+    .links-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .link-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(45, 212, 191, 0.05));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      color: var(--accent-2);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .link-btn:hover {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(45, 212, 191, 0.1));
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15);
+    }
+
+    .link-btn.secondary {
+      color: var(--accent);
+      background: linear-gradient(135deg, rgba(45, 212, 191, 0.1), rgba(37, 99, 235, 0.05));
+    }
+
+    .link-btn.secondary:hover {
+      background: linear-gradient(135deg, rgba(45, 212, 191, 0.2), rgba(37, 99, 235, 0.1));
+    }
+
+    /* Loading State */
+    .loading {
+      text-align: center;
+      padding: 32px;
+      color: var(--muted);
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-top-color: var(--accent-2);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .main-card {
+        padding: 20px;
+      }
+
+      .header h1 {
+        font-size: 24px;
+      }
+
+      .metrics {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .links-section {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .error-message {
+      padding: 16px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 10px;
+      color: #fca5a5;
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>FormBridge Status</h1>
+      <p>Real-time API health & performance metrics</p>
+    </div>
+
+    <div class="main-card">
+      <div id="loading" class="loading" style="display: none;">
+        <div class="spinner"></div>
+        Loading status...
+      </div>
+
+      <div id="content" style="display: none;">
+        <!-- Status Badge -->
+        <div class="status-section">
+          <div id="statusBadge" class="status-badge up">
+            <span class="status-dot"></span>
+            <span id="statusText">Loading...</span>
+          </div>
+          <div class="last-updated">
+            Last checked: <span id="lastUpdated">never</span>
+          </div>
+        </div>
+
+        <!-- Live Metrics -->
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric-label">HTTP Code</div>
+            <div id="httpCode" class="metric-value code">—</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Latency</div>
+            <div id="latency" class="metric-value">— ms</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Region</div>
+            <div id="region" class="metric-value region">—</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Endpoint</div>
+            <div id="endpoint" class="metric-value" style="font-size: 12px; word-break: break-word;">—</div>
+          </div>
+        </div>
+
+        <!-- History Sparkline -->
+        <div class="history-section">
+          <div class="history-title">✓ Last 20 Checks</div>
+          <div class="chart-container" id="chartContainer">
+            <div class="loading">
+              <div class="spinner"></div>
+            </div>
+          </div>
+          <div class="chart-info">
+            <span id="chartInfo">Waiting for history data...</span>
+            <span id="chartStatus">—</span>
+          </div>
+        </div>
+
+        <!-- Links -->
+        <div class="links-section">
+          <a href="https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod/swagger/" class="link-btn">
+            📘 Swagger UI
+          </a>
+          <a href="../dashboard/" class="link-btn secondary">
+            📊 Analytics Dashboard
+          </a>
+          <a href="../../README_PRODUCTION.md" class="link-btn secondary" target="_blank">
+            📖 Full Docs
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Constants
+    const STATUS_JSON_URL = './status.json';
+    const REFRESH_INTERVAL = 30000; // 30 seconds
+
+    // State
+    let statusData = null;
+
+    // Utility Functions
+    function formatDate(isoString) {
+      const date = new Date(isoString);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+
+      if (diffMins < 1) return 'just now';
+      if (diffMins < 60) return `${diffMins}m ago`;
+      if (diffMins < 1440) return `${Math.floor(diffMins / 60)}h ago`;
+      return `${Math.floor(diffMins / 1440)}d ago`;
+    }
+
+    function getStatusClass(status) {
+      return status === 'UP' ? 'up' : status === 'DEGRADED' ? 'degraded' : 'down';
+    }
+
+    function getStatusEmoji(status) {
+      return status === 'UP' ? '✓' : status === 'DEGRADED' ? '⚠' : '✕';
+    }
+
+    // Load Status Data
+    async function loadStatus() {
+      try {
+        const loading = document.getElementById('loading');
+        const content = document.getElementById('content');
+
+        loading.style.display = 'flex';
+        content.style.display = 'none';
+
+        const response = await fetch(STATUS_JSON_URL + '?t=' + Date.now());
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        statusData = await response.json();
+        renderStatus();
+
+        loading.style.display = 'none';
+        content.style.display = 'block';
+      } catch (error) {
+        console.error('Error loading status:', error);
+        document.getElementById('loading').innerHTML = `
+          <div class="error-message">
+            ✕ Failed to load status data. Retrying...
+          </div>
+        `;
+      }
+    }
+
+    // Render Status UI
+    function renderStatus() {
+      if (!statusData) return;
+
+      // Status Badge
+      const badge = document.getElementById('statusBadge');
+      const statusText = document.getElementById('statusText');
+      const statusClass = getStatusClass(statusData.status);
+
+      badge.className = `status-badge ${statusClass}`;
+      statusText.textContent = `${getStatusEmoji(statusData.status)} ${statusData.status}`;
+
+      // Last Updated
+      document.getElementById('lastUpdated').textContent = formatDate(statusData.updated_at);
+
+      // Metrics
+      document.getElementById('httpCode').textContent = statusData.http_code || '—';
+      document.getElementById('latency').textContent = statusData.latency_ms ? `${statusData.latency_ms}ms` : '—';
+      document.getElementById('region').textContent = statusData.region || '—';
+      document.getElementById('endpoint').textContent = statusData.endpoint || '—';
+
+      // History Chart
+      renderHistory();
+    }
+
+    // Render History Chart
+    function renderHistory() {
+      const chartContainer = document.getElementById('chartContainer');
+      const history = (statusData.history || []).slice(-20); // Last 20
+
+      if (history.length === 0) {
+        chartContainer.innerHTML = '<div style="width: 100%; text-align: center; color: var(--muted);">No history data yet</div>';
+        return;
+      }
+
+      const maxLatency = Math.max(...history.map(h => h.lat || 0), 1);
+      const html = history.map((entry, idx) => {
+        const heightPercent = (entry.lat / maxLatency) * 100;
+        const statusClass = getStatusClass(entry.s);
+        const timeAgo = formatDate(entry.t);
+        return `
+          <div class="chart-bar ${statusClass}" style="height: ${heightPercent}%">
+            <div class="chart-tooltip">${entry.code} • ${entry.lat}ms • ${timeAgo}</div>
+          </div>
+        `;
+      }).join('');
+
+      chartContainer.innerHTML = html;
+
+      // Chart Info
+      const avgLatency = Math.round(history.reduce((sum, h) => sum + (h.lat || 0), 0) / history.length);
+      const upCount = history.filter(h => h.s === 'UP').length;
+      const uptimePercent = Math.round((upCount / history.length) * 100);
+
+      document.getElementById('chartInfo').textContent = `Avg Latency: ${avgLatency}ms`;
+      document.getElementById('chartStatus').textContent = `Uptime: ${uptimePercent}%`;
+    }
+
+    // Initialize
+    loadStatus();
+    setInterval(loadStatus, REFRESH_INTERVAL);
+  </script>
+</body>
+</html>

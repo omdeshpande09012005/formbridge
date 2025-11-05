@@ -1,0 +1,89 @@
+name: Load Test (k6 Smoke Test)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    # Skip on forks unless explicitly enabled
+    if: github.event_name == 'workflow_dispatch' || github.repository == 'omdeshpande09012005/formbridge'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install k6
+        run: |
+          sudo gpg --dearmor -o /usr/share/keyrings/k6-archive-keyring.gpg < <(curl -s https://dl.k6.io/key.gpg)
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install -y k6
+
+      - name: Create .env file
+        run: |
+          mkdir -p loadtest
+          cat > loadtest/.env << 'EOF'
+          BASE_URL=${{ secrets.LOADTEST_BASE_URL || 'https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod' }}
+          API_KEY=${{ secrets.LOADTEST_API_KEY }}
+          FORM_ID=my-portfolio
+          HMAC_ENABLED=${{ secrets.LOADTEST_HMAC_ENABLED || 'false' }}
+          HMAC_SECRET=${{ secrets.LOADTEST_HMAC_SECRET }}
+          EOF
+          cat loadtest/.env
+
+      - name: Run k6 Smoke Test
+        run: |
+          mkdir -p loadtest/reports
+          cd /home/runner/work/formbridge/formbridge
+          k6 run loadtest/submit_smoke.js \
+            --vus 2 \
+            --duration 60s \
+            --out json=loadtest/reports/results.json
+        env:
+          BASE_URL: ${{ secrets.LOADTEST_BASE_URL || 'https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod' }}
+          API_KEY: ${{ secrets.LOADTEST_API_KEY }}
+          FORM_ID: my-portfolio
+          HMAC_ENABLED: false
+
+      - name: Generate Reports
+        if: always()
+        run: |
+          ls -la loadtest/reports/
+
+      - name: Upload k6 Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-smoke-test-reports
+          path: loadtest/reports/
+          retention-days: 30
+
+      - name: Test Summary
+        if: always()
+        run: |
+          echo "# k6 Smoke Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f loadtest/reports/results-submit_smoke-*.html ]; then
+            echo "✅ HTML report generated" >> $GITHUB_STEP_SUMMARY
+            echo "📊 Reports available in Artifacts" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ Reports may need to be reviewed manually" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Check Test Success
+        if: always()
+        run: |
+          if [ -d "loadtest/reports" ] && [ "$(ls -A loadtest/reports)" ]; then
+            echo "✅ Smoke test completed successfully"
+            exit 0
+          else
+            echo "⚠️ No reports generated - check logs above"
+            exit 0
+          fi

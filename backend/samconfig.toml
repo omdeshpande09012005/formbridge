@@ -9,6 +9,6 @@ resolve_s3 = true
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 disable_rollback = false
-parameter_overrides = "DDBTableName=\"contact-form-submissions\""
+parameter_overrides = "Stage=\"prod\" DDBTableName=\"contact-form-submissions\" FormConfigTableName=\"formbridge-config\" WebhookQueueName=\"formbridge-webhook-queue\" WebhookDLQName=\"formbridge-webhook-dlq\""
 s3_prefix = "formbridge-stack"
 image_repositories = []

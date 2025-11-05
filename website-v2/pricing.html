@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing - FormBridge</title>
+  <meta name="description" content="Simple, transparent pricing. Free tier to enterprise. Pay only for what you use.">
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body class="bg-white text-gray-900">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center gap-2">
+          <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+          <a href="index.html" data-internal class="text-xl font-bold text-gray-900">FormBridge</a>
+        </div>
+
+        <div class="hidden md:flex items-center gap-8">
+          <a href="index.html" data-internal data-nav-link class="text-gray-700 hover:text-blue-600 transition">Home</a>
+          <a href="solutions.html" data-internal data-nav-link class="text-gray-700 hover:text-blue-600 transition">Solutions</a>
+          <a href="pricing.html" data-internal data-nav-link class="text-gray-700 hover:text-blue-600 transition">Pricing</a>
+          <a href="docs.html" data-internal data-nav-link class="text-gray-700 hover:text-blue-600 transition">Docs</a>
+          <a href="blog/index.html" data-internal data-nav-link class="text-gray-700 hover:text-blue-600 transition">Blog</a>
+          <a href="contact.html" data-internal class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Get Started</a>
+        </div>
+
+        <button id="mobile-menu-btn" class="md:hidden p-2 text-gray-700">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+
+      <div id="mobile-menu" class="hidden md:hidden pb-4 space-y-2">
+        <a href="index.html" data-internal data-nav-link class="block text-gray-700 hover:text-blue-600 py-2">Home</a>
+        <a href="solutions.html" data-internal data-nav-link class="block text-gray-700 hover:text-blue-600 py-2">Solutions</a>
+        <a href="pricing.html" data-internal data-nav-link class="block text-gray-700 hover:text-blue-600 py-2">Pricing</a>
+        <a href="docs.html" data-internal data-nav-link class="block text-gray-700 hover:text-blue-600 py-2">Docs</a>
+        <a href="blog/index.html" data-internal data-nav-link class="block text-gray-700 hover:text-blue-600 py-2">Blog</a>
+        <a href="contact.html" data-internal class="block bg-blue-600 text-white px-4 py-2 rounded-lg text-center hover:bg-blue-700 transition">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <section class="bg-gradient-to-r from-blue-50 to-purple-50 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-4xl font-bold mb-4">Simple, Transparent Pricing</h1>
+      <p class="text-xl text-gray-600">Free tier to get started. Scale as you grow.</p>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="py-16 md:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-8 mb-12">
+        <p class="text-center text-gray-700">
+          <strong>⚠️ Academic Demo Only:</strong> This pricing is for reference. FormBridge is currently a demo project. Contact us for production pricing and deployment options.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8 card-stagger">
+        <!-- Free Plan -->
+        <div class="pricing-card card p-8 rounded-lg border-2 border-gray-200">
+          <h3 class="text-2xl font-bold mb-2">Free</h3>
+          <p class="text-4xl font-bold text-gray-900 mb-2">$0<span class="text-lg text-gray-600">/mo</span></p>
+          <p class="text-gray-600 mb-6">Perfect for testing</p>
+
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+              </svg>
+              <span class="text-gray-700">100 submissions/month</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+              </svg>
+              <span class="text-gray-700">1 form</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+              </svg>
+              <span class="text-gray-700">30-day retention</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+              </svg>
+              <span class="text-gray-700">Email notifications</span>
+            </li>
+          </ul>
+
+          <a href="contact.html" data-internal class="w-full block text-center bg-gray-200 text-gray-900 py-2 rounded-lg font-semibold hover:bg-gray-300 transition">
+            Start Free
+          </a>
+        </div>
+
+        <!-- Starter Plan -->
+        <div class="pricing-card featured card p-8 rounded-lg border-2 border-blue-600 relative">
+          <div class="absolute -top-4 left-6 bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+            Most Popular
+          </div>
+
+          <h3 class="text-2xl font-bold mb-2">Starter</h3>
+          <p class="text-4xl font-bold text-gray-900 mb-2">$29<span class="text-lg text-gray-600">/mo</span></p>
+          <p class="text-gray-600 mb-6">For growing teams</p>
+
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+              </svg>
+              <span class="text-gray-700">10K submissions/month</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+              </svg>
+              <span class="text-gray-700">Unlimited forms</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+              </svg>
+              <span class="text-gray-700">1-year retention</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+              </svg>
+              <span class="text-gray-700">CSV export</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+              </svg>
+              <span class="text-gray-700">API access & webhooks</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+              </svg>
+              <span class="text-gray-700">Email support</span>
+            </li>
+          </ul>
+
+          <a href="contact.html" data-internal class="w-full block text-center bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
+            Contact Sales
+          </a>
+        </div>
+
+        <!-- Enterprise Plan -->
+        <div class="pricing-card card p-8 rounded-lg border-2 border-gray-200">
+          <h3 class="text-2xl font-bold mb-2">Enterprise</h3>
+          <p class="text-4xl font-bold text-gray-900 mb-2">Custom</p>
+          <p class="text-gray-600 mb-6">For large scale</p>
+
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+              </svg>
+              <span class="text-gray-700">Unlimited submissions</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+              </svg>
+              <span class="text-gray-700">Custom retention</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+              </svg>
+              <span class="text-gray-700">SLA & priority support</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+              </svg>
+              <span class="text-gray-700">On-premise deployment</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+              </svg>
+              <span class="text-gray-700">Dedicated account manager</span>
+            </li>
+          </ul>
+
+          <a href="contact.html" data-internal class="w-full block text-center bg-gray-200 text-gray-900 py-2 rounded-lg font-semibold hover:bg-gray-300 transition">
+            Contact Us
+          </a>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="mt-16 max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-8">FAQ</h2>
+
+        <div class="space-y-6">
+          <details class="bg-gray-50 rounded-lg p-6 cursor-pointer group">
+            <summary class="font-semibold text-gray-900 flex justify-between items-center">
+              Can I upgrade or downgrade anytime?
+              <span class="text-blue-600 group-open:rotate-180 transition">▼</span>
+            </summary>
+            <p class="text-gray-600 mt-3">Yes! You can upgrade or downgrade your plan at any time. Changes take effect immediately.</p>
+          </details>
+
+          <details class="bg-gray-50 rounded-lg p-6 cursor-pointer group">
+            <summary class="font-semibold text-gray-900 flex justify-between items-center">
+              What happens if I exceed my quota?
+              <span class="text-blue-600 group-open:rotate-180 transition">▼</span>
+            </summary>
+            <p class="text-gray-600 mt-3">We'll notify you and can upgrade your plan automatically. We never disable service without notice.</p>
+          </details>
+
+          <details class="bg-gray-50 rounded-lg p-6 cursor-pointer group">
+            <summary class="font-semibold text-gray-900 flex justify-between items-center">
+              Do you offer annual billing discounts?
+              <span class="text-blue-600 group-open:rotate-180 transition">▼</span>
+            </summary>
+            <p class="text-gray-600 mt-3">Yes! Annual plans get 20% off. Contact our sales team for details.</p>
+          </details>
+
+          <details class="bg-gray-50 rounded-lg p-6 cursor-pointer group">
+            <summary class="font-semibold text-gray-900 flex justify-between items-center">
+              Is there a free trial?
+              <span class="text-blue-600 group-open:rotate-180 transition">▼</span>
+            </summary>
+            <p class="text-gray-600 mt-3">Yes! Start with our Free tier. No credit card required.</p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="bg-blue-600 text-white py-16 text-center mt-16">
+    <h2 class="text-3xl font-bold mb-4">Ready to get started?</h2>
+    <p class="text-lg mb-8">Try FormBridge free. No credit card required.</p>
+    <a href="contact.html" data-internal class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition">
+      Start Free
+    </a>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-300 py-12 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-4 gap-8 mb-8">
+        <div>
+          <h3 class="text-white font-semibold mb-4">Product</h3>
+          <ul class="space-y-2">
+            <li><a href="pricing.html" data-internal class="hover:text-white transition">Pricing</a></li>
+            <li><a href="docs.html" data-internal class="hover:text-white transition">Documentation</a></li>
+            <li><a href="solutions.html" data-internal class="hover:text-white transition">Solutions</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-white font-semibold mb-4">Company</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="hover:text-white transition">About</a></li>
+            <li><a href="contact.html" data-internal class="hover:text-white transition">Contact</a></li>
+            <li><a href="#" class="hover:text-white transition">GitHub</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-white font-semibold mb-4">Resources</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="hover:text-white transition">API Docs</a></li>
+            <li><a href="#" class="hover:text-white transition">Guides</a></li>
+            <li><a href="#" class="hover:text-white transition">Status</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-white font-semibold mb-4">Legal</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="hover:text-white transition">Privacy</a></li>
+            <li><a href="#" class="hover:text-white transition">Terms</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-800 pt-8 text-center">
+        <p>&copy; 2025 FormBridge. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/config.example.js"></script>
+  <script src="js/site.js"></script>
+</body>
+</html>

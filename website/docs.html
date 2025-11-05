@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FormBridge documentation hub. OpenAPI spec, Postman collection, deployment guides, and more.">
+  
+  <title>Documentation — FormBridge</title>
+  
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body class="bg-white text-slate-900">
+
+<!-- Navigation -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 bg-transparent z-40 transition-all duration-300">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <a href="index.html" class="flex items-center gap-2 group">
+        <img src="assets/logo.svg" alt="FormBridge" class="w-8 h-8 group-hover:scale-110 transition-transform">
+        <span class="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">FormBridge</span>
+      </a>
+
+      <div class="hidden md:flex items-center gap-8">
+        <a href="index.html#features" class="hover:text-purple-600 transition">Features</a>
+        <a href="index.html#how-it-works" class="hover:text-purple-600 transition">How it Works</a>
+        <a href="contact.html" class="hover:text-purple-600 transition">Contact</a>
+        <a href="blog/" class="hover:text-purple-600 transition">Blog</a>
+      </div>
+
+      <button id="mobile-menu-btn" class="md:hidden p-2">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="hidden md:hidden fixed inset-0 bg-black/50 z-50 flex flex-col">
+    <div class="bg-white flex-1 flex flex-col">
+      <div class="flex justify-between items-center p-4 border-b">
+        <span class="font-bold">Menu</span>
+        <button id="mobile-menu-close" class="p-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="flex-1 flex flex-col gap-4 p-4">
+        <a href="index.html#features" class="text-lg hover:text-purple-600">Features</a>
+        <a href="index.html#how-it-works" class="text-lg hover:text-purple-600">How it Works</a>
+        <a href="contact.html" class="text-lg hover:text-purple-600">Contact</a>
+        <a href="blog/" class="text-lg hover:text-purple-600">Blog</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="pt-24 pb-16">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="text-center mb-16">
+      <h1 class="text-5xl font-bold mb-4">Documentation</h1>
+      <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+        Everything you need to integrate, deploy, and monitor FormBridge.
+      </p>
+    </div>
+
+    <!-- Docs Grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+      
+      <!-- OpenAPI Spec -->
+      <a href="https://github.com/omdeshpande09012005/formbridge/blob/main/api/openapi.yaml" target="_blank" class="feature-card glass-card p-6 rounded-xl hover:shadow-lg">
+        <div class="text-4xl mb-3">📋</div>
+        <h3 class="text-xl font-bold mb-2">OpenAPI Spec</h3>
+        <p class="text-slate-600 text-sm mb-4">
+          Full API specification with request/response schemas, error codes, and security definitions.
+        </p>
+        <span class="text-purple-600 font-bold text-sm">View →</span>
+      </a>
+
+      <!-- Swagger UI -->
+      <a href="https://omdeshpande09012005.github.io/swagger/" target="_blank" class="feature-card glass-card p-6 rounded-xl hover:shadow-lg">
+        <div class="text-4xl mb-3">🔍</div>
+        <h3 class="text-xl font-bold mb-2">Swagger UI</h3>
+        <p class="text-slate-600 text-sm mb-4">
+          Interactive API documentation. Try requests in your browser with live examples.
+        </p>
+        <span class="text-purple-600 font-bold text-sm">Open →</span>
+      </a>
+
+      <!-- Postman Collection -->
+      <a href="https://github.com/omdeshpande09012005/formbridge/tree/main/api/postman" target="_blank" class="feature-card glass-card p-6 rounded-xl hover:shadow-lg">
+        <div class="text-4xl mb-3">📤</div>
+        <h3 class="text-xl font-bold mb-2">Postman Collection</h3>
+        <p class="text-slate-600 text-sm mb-4">
+          Pre-built Postman collection with dev/prod environments and HMAC signing.
+        </p>
+        <span class="text-purple-600 font-bold text-sm">Download →</span>
+      </a>
+
+      <!-- Quick Start Guide -->
+      <a href="https://github.com/omdeshpande09012005/formbridge#quick-start" target="_blank" class="feature-card glass-card p-6 rounded-xl hover:shadow-lg">
+        <div class="text-4xl mb-3">🚀</div>
+        <h3 class="text-xl font-bold mb-2">Quick Start</h3>
+        <p class="text-slate-600 text-sm mb-4">
+          Get up and running in 5 minutes. Local dev setup, deployment, and first request.
+        </p>
+        <span class="text-purple-600 font-bold text-sm">Read →</span>
+      </a>
+
+      <!-- Production Deployment -->
+      <a href="https://github.com/omdeshpande09012005/formbridge/blob/main/README_PRODUCTION.md" target="_blank" class="feature-card glass-card p-6 rounded-xl hover:shadow-lg">
+        <div class="text-4xl mb-3">⚙️</div>
+        <h3 class="text-xl font-bold mb-2">Production Guide</h3>
+        <p class="text-slate-600 text-sm mb-4">
+          Deployment, environment setup, monitoring, alarms, and scaling configurations.
+        </p>
+        <span class="text-purple-600 font-bold text-sm">Read →</span>
+      </a>
+
+      <!-- HMAC Signing -->
+      <a href="https://github.com/omdeshpande09012005/formbridge/blob/main/docs/HMAC_SIGNING.md" target="_blank" class="feature-card glass-card p-6 rounded-xl hover:shadow-lg">
+        <div class="text-4xl mb-3">🔐</div>
+        <h3 class="text-xl font-bold mb-2">HMAC Signing</h3>
+        <p class="text-slate-600 text-sm mb-4">
+          Optional request authentication with HMAC-SHA256. JavaScript and Python examples.
+        </p>
+        <span class="text-purple-600 font-bold text-sm">Read →</span>
+      </a>
+
+      <!-- CSV Export -->
+      <a href="https://github.com/omdeshpande09012005/formbridge/blob/main/docs/EXPORT_README.md" target="_blank" class="feature-card glass-card p-6 rounded-xl hover:shadow-lg">
+        <div class="text-4xl mb-3">📊</div>
+        <h3 class="text-xl font-bold mb-2">CSV Export</h3>
+        <p class="text-slate-600 text-sm mb-4">
+          Download submissions as CSV. Time filtering, pagination, and format options.
+        </p>
+        <span class="text-purple-600 font-bold text-sm">Read →</span>
+      </a>
+
+      <!-- Analytics Dashboard -->
+      <a href="https://omdeshpande09012005.github.io/dashboard/" target="_blank" class="feature-card glass-card p-6 rounded-xl hover:shadow-lg">
+        <div class="text-4xl mb-3">📈</div>
+        <h3 class="text-xl font-bold mb-2">Analytics Dashboard</h3>
+        <p class="text-slate-600 text-sm mb-4">
+          Real-time submission tracking, 7-day trends, and download CSV reports.
+        </p>
+        <span class="text-purple-600 font-bold text-sm">View →</span>
+      </a>
+
+      <!-- GitHub Repository -->
+      <a href="https://github.com/omdeshpande09012005/formbridge" target="_blank" class="feature-card glass-card p-6 rounded-xl hover:shadow-lg">
+        <div class="text-4xl mb-3">⭐</div>
+        <h3 class="text-xl font-bold mb-2">GitHub Repo</h3>
+        <p class="text-slate-600 text-sm mb-4">
+          Full source code, issues, pull requests, and contribution guidelines.
+        </p>
+        <span class="text-purple-600 font-bold text-sm">View →</span>
+      </a>
+    </div>
+
+    <!-- Code Example Section -->
+    <div class="bg-slate-50 rounded-xl p-8 mb-16">
+      <h2 class="text-3xl font-bold mb-6">Quick Integration Example</h2>
+      
+      <div class="grid md:grid-cols-2 gap-8">
+        <div>
+          <h3 class="font-bold text-lg mb-3">JavaScript Fetch</h3>
+          <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm"><code>const response = await fetch(
+  'https://api.formbridge.dev/submit',
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Api-Key': 'your_key'
+    },
+    body: JSON.stringify({
+      name: 'John',
+      email: 'john@example.com',
+      message: 'Hello!'
+    })
+  }
+);
+
+const data = await response.json();
+console.log('ID:', data.id);</code></pre>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-lg mb-3">HTML Form (Serverless)</h3>
+          <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm"><code>&lt;form id="contact"&gt;
+  &lt;input name="name" required&gt;
+  &lt;input name="email" type="email" required&gt;
+  &lt;textarea name="message" required&gt;&lt;/textarea&gt;
+  &lt;button type="submit"&gt;Send&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;script&gt;
+document.getElementById('contact').addEventListener(
+  'submit', async (e) =&gt; {
+    e.preventDefault();
+    // Submit to FormBridge API
+  }
+);
+&lt;/script&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-8">
+      <h2 class="text-3xl font-bold mb-6">Common Questions</h2>
+      
+      <div class="space-y-4">
+        <details class="group cursor-pointer" open>
+          <summary class="font-bold text-lg group-open:text-purple-600 flex justify-between items-center">
+            <span>How much does FormBridge cost?</span>
+            <span class="text-xl group-open:rotate-180 transition">▶</span>
+          </summary>
+          <p class="text-slate-700 mt-3 pl-4 border-l-2 border-purple-300">
+            FormBridge is free on the AWS free tier for typical usage. Lambda, DynamoDB, and SES all have generous free allocations that cover most small-to-medium projects.
+          </p>
+        </details>
+
+        <details class="group cursor-pointer">
+          <summary class="font-bold text-lg group-open:text-purple-600 flex justify-between items-center">
+            <span>Can I use FormBridge in production?</span>
+            <span class="text-xl group-open:rotate-180 transition">▶</span>
+          </summary>
+          <p class="text-slate-700 mt-3 pl-4 border-l-2 border-purple-300">
+            Yes! FormBridge is built with production in mind. It includes rate limiting, error handling, monitoring via CloudWatch, and is backed by AWS's 99.95% SLA.
+          </p>
+        </details>
+
+        <details class="group cursor-pointer">
+          <summary class="font-bold text-lg group-open:text-purple-600 flex justify-between items-center">
+            <span>Do I need to expose my API key on the frontend?</span>
+            <span class="text-xl group-open:rotate-180 transition">▶</span>
+          </summary>
+          <p class="text-slate-700 mt-3 pl-4 border-l-2 border-purple-300">
+            For development, yes. For production, it's recommended to use a backend proxy or create form-specific keys with limited permissions. See the HMAC signing docs for additional security.
+          </p>
+        </details>
+
+        <details class="group cursor-pointer">
+          <summary class="font-bold text-lg group-open:text-purple-600 flex justify-between items-center">
+            <span>Is my data encrypted in transit and at rest?</span>
+            <span class="text-xl group-open:rotate-180 transition">▶</span>
+          </summary>
+          <p class="text-slate-700 mt-3 pl-4 border-l-2 border-purple-300">
+            Yes. Submissions use HTTPS, and DynamoDB data is encrypted at rest by default with AWS-managed keys.
+          </p>
+        </details>
+
+        <details class="group cursor-pointer">
+          <summary class="font-bold text-lg group-open:text-purple-600 flex justify-between items-center">
+            <span>How do I export my submissions?</span>
+            <span class="text-xl group-open:rotate-180 transition">▶</span>
+          </summary>
+          <p class="text-slate-700 mt-3 pl-4 border-l-2 border-purple-300">
+            Use the /export endpoint to download a CSV file of all submissions. You can also view real-time stats in the analytics dashboard.
+          </p>
+        </details>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-slate-900 text-white py-12 mt-20">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row justify-between items-center text-slate-400 text-sm">
+      <p>&copy; 2025 FormBridge. Built with ❤️ for developers.</p>
+      <div class="flex gap-6 mt-4 md:mt-0">
+        <a href="https://github.com/omdeshpande09012005/formbridge" class="hover:text-white">GitHub</a>
+        <a href="index.html" class="hover:text-white">Home</a>
+        <a href="contact.html" class="hover:text-white">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Config and Scripts -->
+<script src="js/config.js"></script>
+<script src="js/site.js"></script>
+
+</body>
+</html>

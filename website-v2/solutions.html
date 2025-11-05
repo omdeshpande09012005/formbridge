@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solutions - FormBridge</title>
+  <meta name="description" content="FormBridge solutions for contact forms, feedback, support, and more.">
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body class="bg-white text-gray-900">
+  <nav class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center gap-2">
+          <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          <a href="index.html" data-internal class="text-xl font-bold">FormBridge</a>
+        </div>
+        <div class="hidden md:flex gap-8"><a href="index.html" data-internal class="hover:text-blue-600">Home</a><a href="solutions.html" data-internal class="hover:text-blue-600">Solutions</a><a href="pricing.html" data-internal class="hover:text-blue-600">Pricing</a><a href="docs.html" data-internal class="hover:text-blue-600">Docs</a><a href="contact.html" data-internal class="bg-blue-600 text-white px-4 py-2 rounded-lg">Get Started</a></div>
+        <button id="mobile-menu-btn" class="md:hidden p-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+      <div id="mobile-menu" class="hidden md:hidden pb-4 space-y-2">
+        <a href="index.html" data-internal class="block hover:text-blue-600 py-2">Home</a>
+        <a href="solutions.html" data-internal class="block hover:text-blue-600 py-2">Solutions</a>
+        <a href="pricing.html" data-internal class="block hover:text-blue-600 py-2">Pricing</a>
+        <a href="docs.html" data-internal class="block hover:text-blue-600 py-2">Docs</a>
+        <a href="contact.html" data-internal class="block bg-blue-600 text-white px-4 py-2 rounded-lg">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="bg-gradient-to-r from-blue-50 to-purple-50 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-4xl font-bold mb-4">Solutions for Every Use Case</h1>
+      <p class="text-xl text-gray-600">FormBridge powers contact management across industries</p>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-2 gap-8 card-stagger">
+        <a href="contact.html?form_id=contact-us" data-internal class="card p-8 bg-gray-50 rounded-lg border-2 border-gray-200 hover:border-blue-400">
+          <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 mb-4">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V6c0-1.1-.9-2-2-2zm-2 12H4V6h14v10z"/></svg>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Contact Forms</h3>
+          <p class="text-gray-600 mb-4">Simple, fast contact forms for your website. GDPR-ready, spam-filtered.</p>
+          <span class="text-blue-600 font-semibold">Get Started →</span>
+        </a>
+
+        <a href="contact.html?form_id=feedback" data-internal class="card p-8 bg-gray-50 rounded-lg border-2 border-gray-200 hover:border-blue-400">
+          <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-green-600 mb-4">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Feedback Loops</h3>
+          <p class="text-gray-600 mb-4">Collect user feedback and feature requests. Track trends over time with analytics.</p>
+          <span class="text-blue-600 font-semibold">Get Started →</span>
+        </a>
+
+        <a href="contact.html?form_id=support" data-internal class="card p-8 bg-gray-50 rounded-lg border-2 border-gray-200 hover:border-blue-400">
+          <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 mb-4">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Support Tickets</h3>
+          <p class="text-gray-600 mb-4">Support desk integration. Route issues to the right team with webhooks.</p>
+          <span class="text-blue-600 font-semibold">Get Started →</span>
+        </a>
+
+        <a href="contact.html?form_id=careers" data-internal class="card p-8 bg-gray-50 rounded-lg border-2 border-gray-200 hover:border-blue-400">
+          <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center text-orange-600 mb-4">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Careers & Recruiting</h3>
+          <p class="text-gray-600 mb-4">Job application forms with CSV export. Build your talent pipeline.</p>
+          <span class="text-blue-600 font-semibold">Get Started →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-gray-900 text-gray-300 py-12 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-4 gap-8 mb-8">
+        <div><h3 class="text-white font-semibold mb-4">Product</h3><ul class="space-y-2"><li><a href="pricing.html" data-internal class="hover:text-white">Pricing</a></li><li><a href="docs.html" data-internal class="hover:text-white">Docs</a></li></ul></div>
+        <div><h3 class="text-white font-semibold mb-4">Company</h3><ul class="space-y-2"><li><a href="contact.html" data-internal class="hover:text-white">Contact</a></li></ul></div>
+        <div><h3 class="text-white font-semibold mb-4">Resources</h3><ul class="space-y-2"><li><a href="blog/index.html" data-internal class="hover:text-white">Blog</a></li></ul></div>
+        <div><h3 class="text-white font-semibold mb-4">Legal</h3><ul class="space-y-2"><li><a href="#" class="hover:text-white">Privacy</a></li></ul></div>
+      </div>
+      <div class="border-t border-gray-800 pt-8 text-center"><p>&copy; 2025 FormBridge. All rights reserved.</p></div>
+    </div>
+  </footer>
+
+  <script src="js/config.example.js"></script>
+  <script src="js/site.js"></script>
+</body>
+</html>

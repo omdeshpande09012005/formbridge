@@ -21,3 +21,6 @@ Thumbs.db
 # Local env files
 *.env
 env.json
+
+# Website configuration (contains sensitive data)
+website/js/config.js

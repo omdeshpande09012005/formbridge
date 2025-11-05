@@ -1,0 +1,213 @@
+name: FormBridge Full Test Suite
+
+on:
+  schedule:
+    # Run tests every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Test environment (local or prod)'
+        required: true
+        default: 'prod'
+        type: choice
+        options:
+          - local
+          - prod
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  test-production:
+    name: Production Tests
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event.inputs.environment == 'prod'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq curl
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Create environment file
+        run: |
+          cp tests/.env.prod.example tests/.env.prod
+          echo "BASE_URL=https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod" >> tests/.env.prod
+          echo "API_KEY=${{ secrets.FORMBRIDGE_API_KEY }}" >> tests/.env.prod
+          echo "FORM_ID=my-portfolio" >> tests/.env.prod
+          echo "HMAC_ENABLED=true" >> tests/.env.prod
+          echo "HMAC_SECRET=${{ secrets.FORMBRIDGE_HMAC_SECRET }}" >> tests/.env.prod
+          echo "DDB_TABLE=contact-form-submissions-v2" >> tests/.env.prod
+          echo "REGION=ap-south-1" >> tests/.env.prod
+
+      - name: Run production tests
+        run: bash tests/run_all_prod.sh
+        env:
+          VERBOSE: 'false'
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report-prod
+          path: tests/report.html
+          retention-days: 30
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts-prod
+          path: tests/artifacts/
+          retention-days: 30
+
+      - name: Comment on PR with results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = JSON.parse(fs.readFileSync('tests/artifacts/summary.json', 'utf8'));
+            const passed = summary.steps.filter(s => s.status === 'PASS').length;
+            const failed = summary.steps.filter(s => s.status === 'FAIL').length;
+            const total = summary.steps.length;
+            
+            const body = `## 🧪 FormBridge Test Results
+            
+            **Environment:** Production  
+            **Status:** ${failed === 0 ? '✅ ALL TESTS PASSED' : '❌ SOME TESTS FAILED'}
+            
+            | Metric | Value |
+            |--------|-------|
+            | Passed | ${passed}/${total} |
+            | Failed | ${failed}/${total} |
+            | Duration | ${summary.steps.reduce((sum, s) => sum + s.ms, 0)}ms |
+            
+            [📊 View Full Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      - name: Report test results
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Production Tests
+          path: tests/artifacts/summary.json
+          reporter: 'json'
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "::error::FormBridge production tests failed"
+          cat tests/artifacts/summary.json | jq '.steps[] | select(.status == "FAIL")' || true
+
+  test-local:
+    name: Local Tests
+    runs-on: ubuntu-latest
+    if: github.event.inputs.environment == 'local'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq curl docker-compose
+
+      - name: Create environment file
+        run: |
+          cp tests/.env.local.example tests/.env.local
+          echo "BASE_URL=http://localhost:3000" >> tests/.env.local
+          echo "FORM_ID=my-portfolio" >> tests/.env.local
+          echo "MAILHOG_URL=http://localhost:8025" >> tests/.env.local
+
+      - name: Start local services (Docker Compose)
+        run: |
+          if [ -f "local/docker-compose.yml" ]; then
+            cd local
+            docker-compose up -d
+            sleep 10
+          fi
+
+      - name: Run local tests
+        run: bash tests/run_all_local.sh
+        continue-on-error: true
+
+      - name: Collect Docker logs
+        if: always()
+        run: |
+          docker ps -a | head -20
+          [ -d "local" ] && docker-compose -f local/docker-compose.yml logs 2>/dev/null | head -100 || true
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report-local
+          path: tests/report.html
+          retention-days: 30
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts-local
+          path: tests/artifacts/
+          retention-days: 30
+
+  publish-report:
+    name: Publish Test Results
+    runs-on: ubuntu-latest
+    needs: [test-production]
+    if: always()
+    
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Publish to GitHub Pages (optional)
+        if: github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: test-artifacts-prod
+          destination_dir: test-results/${{ github.run_number }}
+
+      - name: Summary
+        run: |
+          echo "## 📊 Test Suite Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Run:** ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Timestamp:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "[📈 View Full Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY

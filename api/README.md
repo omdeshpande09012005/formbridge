@@ -2,7 +2,20 @@
 
 Welcome to the FormBridge API! This folder contains everything you need to understand, test, and integrate with the FormBridge form submission service.
 
-## 📋 Contents
+## � Automatic Per-Form Routing
+
+FormBridge now supports **automatic form routing** based on `form_id`:
+
+- ✅ Different email recipients per form
+- ✅ Custom subject prefixes per form  
+- ✅ Form-specific brand colors and dashboard URLs
+- ✅ Graceful fallback to global defaults if no form config
+
+When you submit a form with `form_id: "careers"`, FormBridge automatically routes it to the configured recipients and applies form-specific branding.
+
+**For setup details, see:** `docs/FORM_ROUTING.md`
+
+## �📋 Contents
 
 - **`openapi.yaml`** — Complete OpenAPI 3.0 specification (machine-readable, human-readable)
 - **`postman/`** — Postman collection and environment configurations

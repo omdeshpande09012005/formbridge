@@ -6,7 +6,7 @@ Globals:
   Api:
     Cors:
       # exact origin (must be a quoted string inside single-quotes)
-      AllowOrigin: "'https://omdeshpande09012005.github.io'"
+      AllowOrigin: "'https://omdeshpande09012005.github.io/formbridge/'"
       AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
       AllowMethods: "'POST,OPTIONS'"
   Function:
@@ -15,21 +15,33 @@ Globals:
     MemorySize: 256
 
 Parameters:
+  Stage:
+    Type: String
+    Description: "Deployment stage (prod, dev, staging)"
+    Default: "prod"
+    AllowedValues:
+      - "prod"
+      - "dev"
+      - "staging"
   DDBTableName:
     Type: String
     Default: contact-form-submissions
+  FormConfigTableName:
+    Type: String
+    Description: "DynamoDB table for per-form routing configuration"
+    Default: "formbridge-config"
   SesSender:
     Type: String
     Description: "Verified SES sender email address"
     Default: "noreply@formbridge.example.com"
   SesRecipients:
     Type: String
-    Description: "Comma-separated list of recipient email addresses"
+    Description: "Comma-separated list of recipient email addresses (global fallback)"
     Default: "admin@formbridge.example.com"
   FrontendOrigin:
     Type: String
     Description: "Allowed frontend origin for CORS"
-    Default: "https://omdeshpande09012005.github.io"
+    Default: "https://omdeshpande09012005.github.io/formbridge/"
   SesProvider:
     Type: String
     Description: "Email provider: 'ses' for AWS SES or 'mailhog' for local development"
@@ -45,6 +57,14 @@ Parameters:
     Type: String
     Description: "MailHog SMTP port (for local development)"
     Default: "1025"
+  WebhookQueueName:
+    Type: String
+    Description: "SQS queue name for webhook dispatch"
+    Default: "formbridge-webhook-queue"
+  WebhookDLQName:
+    Type: String
+    Description: "SQS Dead Letter Queue name for failed webhooks"
+    Default: "formbridge-webhook-dlq"
 
 Resources:
 
@@ -73,6 +93,70 @@ Resources:
         AttributeName: ttl
         Enabled: true
 
+  FormConfigTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref FormConfigTableName
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+
+  # Webhook delivery infrastructure
+  WebhookDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Ref WebhookDLQName
+      MessageRetentionPeriod: 1209600  # 14 days (max)
+      VisibilityTimeout: 60
+
+  WebhookQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Ref WebhookQueueName
+      VisibilityTimeout: 60
+      MessageRetentionPeriod: 345600  # 4 days
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt WebhookDLQ.Arn
+        maxReceiveCount: 5
+
+  # Consumer Lambda for webhook dispatch
+  WebhookDispatcherFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: formbridgeWebhookDispatcher
+      Handler: webhook_dispatcher.lambda_handler
+      CodeUri: .
+      Timeout: 30
+      MemorySize: 256
+      Environment:
+        Variables:
+          WEBHOOK_TIMEOUT: "10"
+          LOG_LEVEL: "INFO"
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource: "arn:aws:logs:*:*:*"
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt WebhookQueue.Arn
+            BatchSize: 5
+            MaximumBatchingWindowInSeconds: 0
+
   ContactFormFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -82,12 +166,17 @@ Resources:
       Environment:
         Variables:
           DDB_TABLE: !Ref DDBTableName
+          FORM_CONFIG_TABLE: !Ref FormConfigTableName
           SES_SENDER: !Ref SesSender
           SES_RECIPIENTS: !Ref SesRecipients
           FRONTEND_ORIGIN: !Ref FrontendOrigin
           SES_PROVIDER: !Ref SesProvider
           MAILHOG_HOST: !Ref MailhogHost
           MAILHOG_PORT: !Ref MailhogPort
+          WEBHOOK_QUEUE_URL: !Ref WebhookQueue
+          STAGE: !Ref Stage
+          HMAC_VERSION: "1"
+          LOG_LEVEL: "INFO"
       Policies:
         - Version: "2012-10-17"
           Statement:
@@ -98,9 +187,35 @@ Resources:
               Resource: !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DDBTableName}
             - Effect: Allow
               Action:
+                - dynamodb:GetItem
+              Resource: !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${FormConfigTableName}
+            - Effect: Allow
+              Action:
                 - ses:SendEmail
                 - ses:SendRawEmail
               Resource: "*"
+            - Effect: Allow
+              Action:
+                - sqs:SendMessage
+              Resource: !GetAtt WebhookQueue.Arn
+            # SSM Parameter Store access for configuration
+            - Effect: Allow
+              Action:
+                - ssm:GetParameter
+              Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/formbridge/${Stage}/*"
+            # KMS decrypt for SecureString parameters
+            - Effect: Allow
+              Action:
+                - kms:Decrypt
+              Resource: !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*"
+              Condition:
+                StringEquals:
+                  "kms:ViaService": !Sub "ssm.${AWS::Region}.amazonaws.com"
+            # Secrets Manager access for secrets
+            - Effect: Allow
+              Action:
+                - secretsmanager:GetSecretValue
+              Resource: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:formbridge/${Stage}/*"
       Events:
         ContactApi:
           Type: Api
@@ -126,5 +241,23 @@ Outputs:
     Description: "Lambda function ARN"
     Value: !GetAtt ContactFormFunction.Arn
   DynamoDBTable:
-    Description: "DynamoDB table name"
+    Description: "DynamoDB table name for submissions"
     Value: !Ref ContactTable
+  FormConfigTable:
+    Description: "DynamoDB table name for per-form routing configuration"
+    Value: !Ref FormConfigTable
+  WebhookQueueUrl:
+    Description: "SQS queue URL for webhook delivery"
+    Value: !Ref WebhookQueue
+  WebhookQueueArn:
+    Description: "SQS queue ARN for webhook delivery"
+    Value: !GetAtt WebhookQueue.Arn
+  WebhookDLQUrl:
+    Description: "SQS Dead Letter Queue URL for failed webhooks"
+    Value: !Ref WebhookDLQ
+  WebhookDLQArn:
+    Description: "SQS Dead Letter Queue ARN"
+    Value: !GetAtt WebhookDLQ.Arn
+  WebhookDispatcherFunctionArn:
+    Description: "Webhook dispatcher Lambda function ARN"
+    Value: !GetAtt WebhookDispatcherFunction.Arn
