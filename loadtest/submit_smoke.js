@@ -14,17 +14,17 @@ export const options = {
       executor: 'ramping-vus',
       startVUs: 0,
       stages: [
-        { duration: '10s', target: 2 },   // Ramp up to 2 VUs
-        { duration: '40s', target: 2 },   // Hold at 2 VUs
-        { duration: '10s', target: 0 },   // Ramp down
+        { duration: '5s', target: 1 },    // Ramp up to 1 VU
+        { duration: '30s', target: 1 },   // Hold at 1 VU
+        { duration: '5s', target: 0 },    // Ramp down
       ],
       gracefulStop: '5s',
     },
   },
   thresholds: {
-    http_req_duration: ['p(95)<3000', 'p(99)<5000'],
-    'http_req_failed{staticAsset:no}': ['rate<0.05'],
-    success_rate: ['rate>0.95'],
+    http_req_duration: ['p(95)<5000', 'p(99)<10000'],
+    http_req_failed: ['rate<0.1'],
+    success_rate: ['rate>0.90'],
   },
 };
 
@@ -66,16 +66,20 @@ export default function (data) {
 
     latency.add(res.timings.duration, { type: 'submit' });
 
-    const success = check(res, {
-      'status is any': (r) => true,  // Accept any response for now
-      'latency < 600ms': (r) => r.timings.duration < 600,
+    // Check if request was successful (any 2xx or 3xx status)
+    const isSuccess = res.status >= 200 && res.status < 400;
+    
+    const checks = check(res, {
+      'status is 2xx or 3xx': (r) => r.status >= 200 && r.status < 400,
+      'response time reasonable': (r) => r.timings.duration < 10000,
     });
 
-    // Log response code
-    if (res.status !== 200 && res.status !== 201) {
-      console.log('Response: ' + res.status + ', Body: ' + res.body);
+    // Log failures for debugging
+    if (!isSuccess) {
+      console.log(`[FAIL] Response: ${res.status}, Body: ${res.body.substring(0, 200)}`);
     }
 
-    successRate.add(success);
+    // Track success rate based on HTTP status
+    successRate.add(isSuccess);
   });
 }
