@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Getting Started with FormBridge: Best Practices - Blog</title>
+  <meta name="description" content="Learn the essentials of setting up your first form with FormBridge.">
+  <link rel="icon" type="image/x-icon" href="../../assets/favicon.ico">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../../css/site.css">
+</head>
+<body class="bg-white text-gray-900">
+  <nav class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center gap-2">
+          <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          <a href="../../index.html" data-internal class="text-xl font-bold">FormBridge</a>
+        </div>
+        <div class="hidden md:flex gap-8"><a href="../../index.html" data-internal class="hover:text-blue-600">Home</a><a href="../../solutions.html" data-internal class="hover:text-blue-600">Solutions</a><a href="../../pricing.html" data-internal class="hover:text-blue-600">Pricing</a><a href="../../docs.html" data-internal class="hover:text-blue-600">Docs</a><a href="../../contact.html" data-internal class="bg-blue-600 text-white px-4 py-2 rounded-lg">Get Started</a></div>
+        <button id="mobile-menu-btn" class="md:hidden p-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+      <div id="mobile-menu" class="hidden md:hidden pb-4 space-y-2">
+        <a href="../../index.html" data-internal class="block hover:text-blue-600 py-2">Home</a>
+        <a href="../../solutions.html" data-internal class="block hover:text-blue-600 py-2">Solutions</a>
+        <a href="../../pricing.html" data-internal class="block hover:text-blue-600 py-2">Pricing</a>
+        <a href="../../docs.html" data-internal class="block hover:text-blue-600 py-2">Docs</a>
+        <a href="../../contact.html" data-internal class="block bg-blue-600 text-white px-4 py-2 rounded-lg">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <a href="index.html" data-internal class="text-blue-600 hover:underline mb-4 inline-block">← Back to Blog</a>
+    
+    <header class="mb-8">
+      <h1 class="text-4xl font-bold mb-4">Getting Started with FormBridge: Best Practices</h1>
+      <div class="flex items-center gap-4 text-gray-600">
+        <span>March 15, 2025</span>
+        <span>•</span>
+        <span>8 min read</span>
+      </div>
+    </header>
+
+    <section class="prose prose-lg max-w-none space-y-6">
+      <p>FormBridge makes it easy to collect, manage, and analyze form submissions. Whether you're building a contact form for your portfolio or a production-grade feedback system, here are the best practices to get the most out of the platform.</p>
+
+      <h2 class="text-2xl font-bold mt-8 mb-4">1. Set Up Your API Key Securely</h2>
+      <p>Your API key is your gateway to FormBridge. Keep it secure by:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Never committing it to version control</li>
+        <li>Using environment variables or secrets management</li>
+        <li>Rotating keys regularly in production</li>
+        <li>Restricting permissions to the minimum needed</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-8 mb-4">2. Enable HMAC Signatures for Verification</h2>
+      <p>For production forms, always enable HMAC-SHA256 signatures to verify that submissions actually come from your site:</p>
+      <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 font-mono text-sm overflow-x-auto">
+        <code>const signature = CryptoJS.HmacSHA256(JSON.stringify(data), HMAC_SECRET);</code>
+      </div>
+      <p>This protects against unauthorized submissions and ensures data integrity.</p>
+
+      <h2 class="text-2xl font-bold mt-8 mb-4">3. Configure Webhooks for Real-Time Processing</h2>
+      <p>Set up webhooks to automatically trigger actions when forms are submitted. Common use cases:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Send notifications to Slack or email</li>
+        <li>Create tasks in project management tools</li>
+        <li>Trigger backend workflows</li>
+        <li>Log to analytics platforms</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-8 mb-4">4. Customize Email Templates</h2>
+      <p>Make your form submissions feel like part of your brand. Customize email confirmations with:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Your company branding and colors</li>
+        <li>Relevant call-to-action buttons</li>
+        <li>Dynamic content based on form data</li>
+        <li>White-label options for agencies</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-8 mb-4">5. Monitor Analytics and Metrics</h2>
+      <p>Track your form's performance over time using FormBridge's analytics dashboard. Key metrics to watch:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Submission rate and trends</li>
+        <li>Response time from submission to email delivery</li>
+        <li>Error rates and validation failures</li>
+        <li>User engagement and form completion rates</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-8 mb-4">6. Plan for Scale</h2>
+      <p>As your form grows, keep these considerations in mind:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Start with the Free plan and upgrade as needed</li>
+        <li>Use CSV export for regular data backups</li>
+        <li>Archive old submissions to keep performance optimal</li>
+        <li>Contact support for SLA and on-premise options</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-8 mb-4">Getting Help</h2>
+      <p>New to FormBridge? Check out our <a href="../../docs.html" data-internal class="text-blue-600 hover:underline">documentation</a> or <a href="../../contact.html" data-internal class="text-blue-600 hover:underline">contact our support team</a>.</p>
+
+      <div class="bg-blue-50 border-l-4 border-blue-600 p-4 mt-8">
+        <p class="font-semibold text-blue-900">Pro Tip:</p>
+        <p class="text-blue-800">Use multiple forms with different form_ids to segment data by use case (contact, feedback, support, etc.). This makes analysis and reporting much easier.</p>
+      </div>
+    </section>
+
+    <footer class="mt-16 pt-8 border-t border-gray-200">
+      <a href="index.html" data-internal class="text-blue-600 hover:underline">← Back to Blog</a>
+    </footer>
+  </article>
+
+  <footer class="bg-gray-900 text-gray-300 py-12 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-4 gap-8 mb-8">
+        <div><h3 class="text-white font-semibold mb-4">Product</h3><ul class="space-y-2"><li><a href="../../pricing.html" data-internal class="hover:text-white">Pricing</a></li><li><a href="../../docs.html" data-internal class="hover:text-white">Docs</a></li></ul></div>
+        <div><h3 class="text-white font-semibold mb-4">Company</h3><ul class="space-y-2"><li><a href="../../contact.html" data-internal class="hover:text-white">Contact</a></li></ul></div>
+        <div><h3 class="text-white font-semibold mb-4">Resources</h3><ul class="space-y-2"><li><a href="index.html" data-internal class="hover:text-white">Blog</a></li></ul></div>
+        <div><h3 class="text-white font-semibold mb-4">Legal</h3><ul class="space-y-2"><li><a href="#" class="hover:text-white">Privacy</a></li></ul></div>
+      </div>
+      <div class="border-t border-gray-800 pt-8 text-center"><p>&copy; 2025 FormBridge. All rights reserved.</p></div>
+    </div>
+  </footer>
+
+  <script src="../../js/config.example.js"></script>
+  <script src="../../js/site.js"></script>
+</body>
+</html>

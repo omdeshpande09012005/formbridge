@@ -1,207 +1,395 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Contact — FormBridge</title>
-  <style>
-    :root{
-      --bg:#0f1724; --card:#0b1220; --muted:#9aa4b2; --accent:#2dd4bf; --accent-2:#2563eb;
-      --glass: rgba(255,255,255,0.04);
-      --glass-2: rgba(255,255,255,0.03);
-    }
-    html,body{height:100%}
-    body{
-      margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: linear-gradient(180deg,#041025 0%, #071426 60%);
-      color:#e6eef6; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-      display:flex; align-items:center; justify-content:center; padding:32px;
-    }
+<!DOCTYPE html><!doctype html>
 
-    .layout{width:100%;max-width:1100px;display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:start}
-    @media (max-width:980px){ .layout{ grid-template-columns: 1fr; padding: 20px } }
+<html lang="en"><html lang="en">
 
-    /* Left: card with form */
-    .card{
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.015));
-      border-radius:14px;padding:28px;border:1px solid rgba(255,255,255,0.04);
-      box-shadow: 0 20px 50px rgba(2,6,23,0.6); transform: translateY(0); transition: transform .35s ease;
-    }
-    .card:hover{ transform: translateY(-6px) }
+<head><head>
 
-    h1{margin:0 0 8px 0;font-size:22px;letter-spacing:0.2px}
-    p.lead{margin:0 0 18px 0;color:var(--muted);font-size:14px}
+    <meta charset="UTF-8">  <meta charset="utf-8" />
 
-    label{display:block;margin-top:12px;color:#cfe7ff;font-size:13px;font-weight:600}
-    input, textarea, select {
-      width:100%; margin-top:6px; padding:12px 14px; border-radius:10px;
-      background:var(--glass); border:1px solid rgba(255,255,255,0.03); color: #dff3ff;
-      font-size:14px; outline:none; transition: box-shadow .18s, transform .12s;
-    }
-    textarea{min-height:120px;resize:vertical}
-    input:focus, textarea:focus, select:focus { box-shadow: 0 6px 18px rgba(37,99,235,0.08); transform: translateY(-1px) }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-    .row{display:flex;gap:12px}
-    .row > *{flex:1}
+    <title>FormBridge - Serverless Contact Form Platform</title>  <title>Contact — FormBridge</title>
 
-    .send-bar{display:flex; align-items:center; gap:12px; margin-top:16px}
-    button{
-      background: linear-gradient(180deg,var(--accent-2), #1e40af);
-      border:none;padding:12px 18px;border-radius:10px;color:white;font-weight:700;cursor:pointer;
-      box-shadow: 0 8px 30px rgba(37,99,235,0.12); transition: transform .12s ease, opacity .12s;
-    }
-    button:hover{ transform: translateY(-2px) }
-    button[disabled]{ opacity:.55; cursor:not-allowed; transform:none; box-shadow:none }
+    <meta name="description" content="FormBridge - A production-ready serverless contact form backend built with AWS Lambda, API Gateway, and DynamoDB.">  <style>
 
-    .status{font-size:14px;margin-left:8px;color:var(--muted)}
+    <meta name="keywords" content="FormBridge, serverless, contact form, AWS Lambda, API">    :root{
 
-    /* right column meta / cards */
-    .meta-col{display:flex;flex-direction:column;gap:14px}
-    .mini{background:var(--glass-2);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
-    .mini h3{margin:0;font-size:13px}
-    .mini p{margin:6px 0 0 0;color:var(--muted);font-size:13px}
+    <meta property="og:title" content="FormBridge - Serverless Contact Form Platform">      --bg:#0f1724; --card:#0b1220; --muted:#9aa4b2; --accent:#2dd4bf; --accent-2:#2563eb;
 
-    /* toast */
-    .toast {
-      position: fixed; right:20px; bottom:20px; z-index:1200;
-      display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;
-      background: linear-gradient(90deg,#042b2b,#0b2440); color:#ecfdf5; box-shadow: 0 12px 40px rgba(2,6,23,0.6);
-      border:1px solid rgba(255,255,255,0.04); transform: translateY(25px) scale(.98); opacity:0; pointer-events:none;
-      transition:all .28s cubic-bezier(.2,.9,.2,1);
-    }
-    .toast.show{ transform: none; opacity:1; pointer-events:auto }
+    <meta property="og:description" content="A powerful alternative to Formspree built on AWS Lambda and DynamoDB">      --glass: rgba(255,255,255,0.04);
 
-    .tick{
-      width:36px;height:36px;border-radius:9px;background:linear-gradient(180deg,#064e3b,#044d3f);
-      display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#7fffd6;
-      box-shadow: 0 8px 20px rgba(2,6,23,0.45);
-    }
+    <meta property="og:type" content="website">      --glass-2: rgba(255,255,255,0.03);
 
-    .muted-small{font-size:13px;color:var(--muted)}
+    <style>    }
 
-    /* subtle entrance */
-    .layout{opacity:0; transform: translateY(6px); animation:fadeUp .6s .12s forwards}
-    @keyframes fadeUp { to { opacity:1; transform:none } }
+        * {    html,body{height:100%}
 
-    /* little bounce for success */
-    .pulse { animation: pulse 1s ease; }
-    @keyframes pulse { 0%{ transform:scale(1) } 50%{ transform:scale(1.03) } 100%{ transform:scale(1) } }
-  </style>
-</head>
+            margin: 0;    body{
+
+            padding: 0;      margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+
+            box-sizing: border-box;      background: linear-gradient(180deg,#041025 0%, #071426 60%);
+
+        }      color:#e6eef6; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+
+              display:flex; align-items:center; justify-content:center; padding:32px;
+
+        body {    }
+
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',    .layout{width:100%;max-width:1100px;display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:start}
+
+                sans-serif;    @media (max-width:980px){ .layout{ grid-template-columns: 1fr; padding: 20px } }
+
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+            min-height: 100vh;    /* Left: card with form */
+
+            display: flex;    .card{
+
+            align-items: center;      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.015));
+
+            justify-content: center;      border-radius:14px;padding:28px;border:1px solid rgba(255,255,255,0.04);
+
+            color: #333;      box-shadow: 0 20px 50px rgba(2,6,23,0.6); transform: translateY(0); transition: transform .35s ease;
+
+        }    }
+
+            .card:hover{ transform: translateY(-6px) }
+
+        .container {
+
+            background: white;    h1{margin:0 0 8px 0;font-size:22px;letter-spacing:0.2px}
+
+            border-radius: 12px;    p.lead{margin:0 0 18px 0;color:var(--muted);font-size:14px}
+
+            padding: 60px 40px;
+
+            text-align: center;    label{display:block;margin-top:12px;color:#cfe7ff;font-size:13px;font-weight:600}
+
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);    input, textarea, select {
+
+            max-width: 500px;      width:100%; margin-top:6px; padding:12px 14px; border-radius:10px;
+
+            animation: slideUp 0.6s ease-out;      background:var(--glass); border:1px solid rgba(255,255,255,0.03); color: #dff3ff;
+
+        }      font-size:14px; outline:none; transition: box-shadow .18s, transform .12s;
+
+            }
+
+        @keyframes slideUp {    textarea{min-height:120px;resize:vertical}
+
+            from {    input:focus, textarea:focus, select:focus { box-shadow: 0 6px 18px rgba(37,99,235,0.08); transform: translateY(-1px) }
+
+                opacity: 0;
+
+                transform: translateY(30px);    .row{display:flex;gap:12px}
+
+            }    .row > *{flex:1}
+
+            to {
+
+                opacity: 1;    .send-bar{display:flex; align-items:center; gap:12px; margin-top:16px}
+
+                transform: translateY(0);    button{
+
+            }      background: linear-gradient(180deg,var(--accent-2), #1e40af);
+
+        }      border:none;padding:12px 18px;border-radius:10px;color:white;font-weight:700;cursor:pointer;
+
+              box-shadow: 0 8px 30px rgba(37,99,235,0.12); transition: transform .12s ease, opacity .12s;
+
+        .logo {    }
+
+            font-size: 48px;    button:hover{ transform: translateY(-2px) }
+
+            margin-bottom: 20px;    button[disabled]{ opacity:.55; cursor:not-allowed; transform:none; box-shadow:none }
+
+        }
+
+            .status{font-size:14px;margin-left:8px;color:var(--muted)}
+
+        h1 {
+
+            color: #667eea;    /* right column meta / cards */
+
+            margin-bottom: 10px;    .meta-col{display:flex;flex-direction:column;gap:14px}
+
+            font-size: 2em;    .mini{background:var(--glass-2);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+
+        }    .mini h3{margin:0;font-size:13px}
+
+            .mini p{margin:6px 0 0 0;color:var(--muted);font-size:13px}
+
+        .tagline {
+
+            color: #666;    /* toast */
+
+            font-size: 16px;    .toast {
+
+            margin-bottom: 30px;      position: fixed; right:20px; bottom:20px; z-index:1200;
+
+        }      display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;
+
+              background: linear-gradient(90deg,#042b2b,#0b2440); color:#ecfdf5; box-shadow: 0 12px 40px rgba(2,6,23,0.6);
+
+        .description {      border:1px solid rgba(255,255,255,0.04); transform: translateY(25px) scale(.98); opacity:0; pointer-events:none;
+
+            color: #555;      transition:all .28s cubic-bezier(.2,.9,.2,1);
+
+            font-size: 14px;    }
+
+            line-height: 1.6;    .toast.show{ transform: none; opacity:1; pointer-events:auto }
+
+            margin-bottom: 40px;
+
+        }    .tick{
+
+              width:36px;height:36px;border-radius:9px;background:linear-gradient(180deg,#064e3b,#044d3f);
+
+        .buttons {      display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#7fffd6;
+
+            display: flex;      box-shadow: 0 8px 20px rgba(2,6,23,0.45);
+
+            gap: 15px;    }
+
+            justify-content: center;
+
+            flex-wrap: wrap;    .muted-small{font-size:13px;color:var(--muted)}
+
+        }
+
+            /* subtle entrance */
+
+        .btn {    .layout{opacity:0; transform: translateY(6px); animation:fadeUp .6s .12s forwards}
+
+            padding: 12px 30px;    @keyframes fadeUp { to { opacity:1; transform:none } }
+
+            border: none;
+
+            border-radius: 6px;    /* little bounce for success */
+
+            font-size: 16px;    .pulse { animation: pulse 1s ease; }
+
+            font-weight: 600;    @keyframes pulse { 0%{ transform:scale(1) } 50%{ transform:scale(1.03) } 100%{ transform:scale(1) } }
+
+            cursor: pointer;  </style>
+
+            transition: all 0.3s ease;</head>
+
+            text-decoration: none;<body>
+
+            display: inline-block;  <div class="layout">
+
+        }    <div class="card" aria-live="polite">
+
+              <h1>Contact us</h1>
+
+        .btn-primary {      <p class="lead">Send a message and the project admin will receive it. (We do the rest.)</p>
+
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+            color: white;      <label for="name">Name</label>
+
+        }      <input id="name" placeholder="Your full name" autocomplete="name"/>
+
+        
+
+        .btn-primary:hover {      <label for="email">Email</label>
+
+            transform: translateY(-2px);      <input id="email" placeholder="you@example.com" type="email" autocomplete="email"/>
+
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+
+        }      <label for="topic">Topic</label>
+
+              <select id="topic" aria-label="Topic">
+
+        .btn-secondary {        <option value="general">General</option>
+
+            background: #f0f0f0;        <option value="bug">Bug report</option>
+
+            color: #333;        <option value="feature">Feature request</option>
+
+            border: 2px solid #667eea;      </select>
+
+            color: #667eea;
+
+        }      <label for="message">Message</label>
+
+              <textarea id="message" rows="6" placeholder="Type your message..."></textarea>
+
+        .btn-secondary:hover {
+
+            background: #667eea;      <div class="send-bar">
+
+            color: white;        <button id="send">Send Message</button>
+
+        }        <div id="status" class="status muted-small">Ready</div>
+
+              </div>
+
+        .features {
+
+            margin-top: 40px;      <div class="muted-small" style="margin-top:10px">Tip: You'll receive a confirmation in your inbox if configured.</div>
+
+            text-align: left;    </div>
+
+            background: #f9f9f9;
+
+            padding: 20px;    <aside class="meta-col">
+
+            border-radius: 8px;      <div class="mini">
+
+        }        <h3>Why FormBridge?</h3>
+
+                <p class="muted-small">Simple serverless contact form that stores submissions in DynamoDB and forwards via SES.</p>
+
+        .feature-item {      </div>
+
+            display: flex;
+
+            align-items: center;      <div class="mini">
+
+            margin-bottom: 12px;        <h3>Last action</h3>
+
+            font-size: 14px;        <p id="meta" class="muted-small">No requests yet</p>
+
+        }      </div>
+
+        
+
+        .feature-item:last-child {      <div class="mini">
+
+            margin-bottom: 0;        <h3>Status</h3>
+
+        }        <p id="meta2" class="muted-small">Backend: operational ✓</p>
+
+              </div>
+
+        .feature-icon {    </aside>
+
+            color: #667eea;  </div>
+
+            font-size: 18px;
+
+            margin-right: 10px;  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true">
+
+            font-weight: bold;    <div class="tick">✓</div>
+
+        }    <div>
+
+              <div id="toast-title" style="font-weight:700">Message sent</div>
+
+        .loading {      <div id="toast-sub" style="font-size:13px;color:#bfe9e2">We've queued your message.</div>
+
+            display: none;    </div>
+
+            animation: spin 1s linear infinite;  </div>
+
+        }
+
+          <script>
+
+        @keyframes spin {    // ---------- CONFIG ----------
+
+            0% { transform: rotate(0deg); }    // set this to your API invoke URL
+
+            100% { transform: rotate(360deg); }    const API_ENDPOINT = "https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod/submit";
+
+        }    // API Key for production authentication
+
+    </style>    const API_KEY = "OU6iPqehCs94cbpttxIKH2cJ7UhQDbuX73zTgSyN";
+
+</head>    // ----------------------------
+
 <body>
-  <div class="layout">
-    <div class="card" aria-live="polite">
-      <h1>Contact us</h1>
-      <p class="lead">Send a message and the project admin will receive it. (We do the rest.)</p>
-      
-      <div style="margin-bottom: 20px; padding: 12px; background: rgba(37,99,235,0.1); border-radius: 8px; border: 1px solid rgba(37,99,235,0.2);">
-        <p style="margin: 0 0 8px 0; font-size: 13px; color: #7cc5ff;">📊 View Submissions Analytics & Status</p>
-        <a href="./dashboard/" style="display: inline-block; padding: 8px 14px; background: linear-gradient(180deg,#2563eb, #1e40af); color: white; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600; transition: transform .12s; cursor: pointer; margin-right: 8px;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
-          📊 Analytics Dashboard →
-        </a>
-        <a href="./status/" style="display: inline-block; padding: 8px 14px; background: linear-gradient(180deg,#10b981, #059669); color: white; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600; transition: transform .12s; cursor: pointer; margin-right: 8px;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
-          🟢 Status Page →
-        </a>
-        <a href="./swagger.html" style="display: inline-block; padding: 8px 14px; background: linear-gradient(180deg,#059669, #047857); color: white; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600; transition: transform .12s; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
-          📖 API Docs →
-        </a>
-      </div>
 
-      <label for="name">Name</label>
-      <input id="name" placeholder="Your full name" autocomplete="name"/>
+    <div class="container">    const sendBtn = document.getElementById('send');
 
-      <label for="email">Email</label>
-      <input id="email" placeholder="you@example.com" type="email" autocomplete="email"/>
+        <div class="logo">🌉</div>    const statusEl = document.getElementById('status');
 
-      <label for="topic">Topic</label>
-      <select id="topic" aria-label="Topic">
-        <option value="general">General</option>
-        <option value="bug">Bug report</option>
-        <option value="feature">Feature request</option>
-      </select>
+        <h1>FormBridge</h1>    const metaEl = document.getElementById('meta');
 
-      <label for="message">Message</label>
-      <textarea id="message" rows="6" placeholder="Type your message..."></textarea>
+        <p class="tagline">Serverless Contact Form Platform</p>    const toast = document.getElementById('toast');
 
-      <div class="send-bar">
-        <button id="send">Send Message</button>
-        <div id="status" class="status muted-small">Ready</div>
-      </div>
+            const toastSub = document.getElementById('toast-sub');
 
-      <div class="muted-small" style="margin-top:10px">Tip: You'll receive a confirmation in your inbox if configured.</div>
-    </div>
+        <p class="description">
 
-    <aside class="meta-col">
-      <div class="mini">
-        <h3>Why FormBridge?</h3>
-        <p class="muted-small">Simple serverless contact form that stores submissions in DynamoDB and forwards via SES.</p>
-      </div>
+            A production-ready, cost-effective alternative to Formspree. Built on AWS Lambda, DynamoDB, and SES with comprehensive load testing and a beautiful marketing website.    function showToast(title, sub){
 
-      <div class="mini">
-        <h3>Last action</h3>
-        <p id="meta" class="muted-small">No requests yet</p>
-      </div>
+        </p>      document.getElementById('toast-title').textContent = title || 'Message sent';
 
-      <div class="mini">
-        <h3>Status</h3>
-        <p id="meta2" class="muted-small">Backend: operational ✓</p>
-      </div>
-    </aside>
-  </div>
+              toastSub.textContent = sub || 'We queued your message.';
 
-  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true">
-    <div class="tick">✓</div>
-    <div>
-      <div id="toast-title" style="font-weight:700">Message sent</div>
-      <div id="toast-sub" style="font-size:13px;color:#bfe9e2">We've queued your message.</div>
-    </div>
-  </div>
+        <div class="buttons">      toast.classList.add('show','pulse');
 
-  <script>
-    // ---------- CONFIG ----------
-    // set this to your API invoke URL
-    const API_ENDPOINT = "https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod/submit";
-    // ----------------------------
+            <a href="./website-v2/" class="btn btn-primary">View Website →</a>      setTimeout(()=> toast.classList.remove('pulse'), 900);
 
-    const sendBtn = document.getElementById('send');
-    const statusEl = document.getElementById('status');
-    const metaEl = document.getElementById('meta');
-    const toast = document.getElementById('toast');
-    const toastSub = document.getElementById('toast-sub');
+            <a href="https://github.com/omdeshpande09012005/formbridge" class="btn btn-secondary">GitHub</a>      // hide after 6s
 
-    function showToast(title, sub){
-      document.getElementById('toast-title').textContent = title || 'Message sent';
-      toastSub.textContent = sub || 'We queued your message.';
-      toast.classList.add('show','pulse');
-      setTimeout(()=> toast.classList.remove('pulse'), 900);
-      // hide after 6s
-      clearTimeout(toast._hideTimer);
-      toast._hideTimer = setTimeout(()=> toast.classList.remove('show'), 6000);
-    }
+        </div>      clearTimeout(toast._hideTimer);
 
-    function setStatus(text){
-      statusEl.textContent = text;
-    }
+              toast._hideTimer = setTimeout(()=> toast.classList.remove('show'), 6000);
 
-    async function sendRequest(payload){
-      // send in background but return promise so we can debug/log
-      try {
-        const controller = new AbortController();
-        const t = setTimeout(()=>controller.abort(), 15000);
+        <div class="features">    }
 
-        const resp = await fetch(API_ENDPOINT, {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify(payload),
+            <div class="feature-item">
+
+                <span class="feature-icon">✓</span>    function setStatus(text){
+
+                <span><strong>100% Serverless</strong> - AWS Lambda + DynamoDB</span>      statusEl.textContent = text;
+
+            </div>    }
+
+            <div class="feature-item">
+
+                <span class="feature-icon">✓</span>    async function sendRequest(payload){
+
+                <span><strong>Production Ready</strong> - Live at production scale</span>      // send in background but return promise so we can debug/log
+
+            </div>      try {
+
+            <div class="feature-item">        const controller = new AbortController();
+
+                <span class="feature-icon">✓</span>        const t = setTimeout(()=>controller.abort(), 15000);
+
+                <span><strong>Comprehensive Testing</strong> - 40%+ code coverage</span>
+
+            </div>        const resp = await fetch(API_ENDPOINT, {
+
+            <div class="feature-item">          method: 'POST',
+
+                <span class="feature-icon">✓</span>          headers: {
+
+                <span><strong>Beautiful UI</strong> - Responsive design</span>            'Content-Type': 'application/json',
+
+            </div>            'X-Api-Key': API_KEY
+
+        </div>          },
+
+    </div>          body: JSON.stringify(payload),
+
           mode: 'cors',
-          signal: controller.signal
-        });
 
-        clearTimeout(t);
-        const txt = await resp.text();
-        let data;
-        try { data = txt ? JSON.parse(txt) : {}; } catch(e) { data = {raw:txt}; }
-        return { ok: resp.ok, status: resp.status, data, headers: resp.headers };
+    <script>          signal: controller.signal
+
+        // Redirect to website-v2 after 3 seconds        });
+
+        setTimeout(() => {
+
+            window.location.href = './website-v2/';        clearTimeout(t);
+
+        }, 3000);        const txt = await resp.text();
+
+    </script>        let data;
+
+</body>        try { data = txt ? JSON.parse(txt) : {}; } catch(e) { data = {raw:txt}; }
+
+</html>        return { ok: resp.ok, status: resp.status, data, headers: resp.headers };
+
       } catch (err) {
         // network/CORS/timeouts show up here
         console.error('Background send error:', err);
