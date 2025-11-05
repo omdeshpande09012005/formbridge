@@ -101,7 +101,124 @@ aws logs tail /aws/lambda/contactFormProcessor --follow --region ap-south-1 --pr
 
 ---
 
-## 💾 Data Model
+## � Analytics Dashboard
+
+Track form submission metrics with a **minimal, static analytics dashboard** that requires no backend setup.
+
+### Quick Start
+
+```bash
+# 1. Copy configuration template
+cp dashboard/config.example.js dashboard/config.js
+
+# 2. Edit config.js with your API endpoint
+# Set API_URL to: https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod
+
+# 3. Open dashboard
+open dashboard/index.html
+# Or use a local server: python -m http.server 8000
+# Then visit: http://localhost:8000/dashboard/
+```
+
+### Features
+
+- **Single-page UI**: Form ID selector, refresh button, KPI tiles
+- **7-Day Chart**: Line chart showing daily submission trends
+- **Daily Breakdown**: Table with date and submission count
+- **Responsive Design**: Mobile (360px+), tablet, and desktop
+- **Error Handling**: Graceful degradation with toast notifications
+- **GitHub Pages Ready**: No build tools, pure static files
+- **Environment Detection**: Shows DEV or PROD badge
+
+### Configuration
+
+**Development (Local Docker):**
+```javascript
+export const CONFIG = {
+    API_URL: 'http://127.0.0.1:3000',
+    API_KEY: '',
+    DEFAULT_FORM_ID: 'my-portfolio'
+};
+```
+
+**Production (AWS):**
+```javascript
+export const CONFIG = {
+    API_URL: 'https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod',
+    API_KEY: 'your-read-only-api-key',  // Optional
+    DEFAULT_FORM_ID: 'my-portfolio'
+};
+```
+
+**⚠️ Security Note for Static Sites:**
+- API keys are visible in the browser (static files)
+- Use read-only keys with analytics-only permissions
+- Consider IP whitelisting at API Gateway level
+- Rotate keys regularly
+
+### Deployment to GitHub Pages
+
+```bash
+# 1. Dashboard is already copied to /docs/dashboard/
+# 2. Create config.js from template
+cp docs/dashboard/config.example.js docs/dashboard/config.js
+
+# 3. Edit with your production API details
+# Update API_URL to: https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod
+# Add API_KEY if using authentication
+
+# 4. Add to .gitignore (protect API key)
+echo "docs/dashboard/config.js" >> .gitignore
+
+# 5. Push to GitHub
+git add docs/dashboard/
+git commit -m "Add analytics dashboard configuration"
+git push origin main
+
+# 6. Access dashboard on GitHub Pages
+# https://omdeshpande09012005.github.io/docs/dashboard/
+```
+
+### Files
+
+- **`dashboard/index.html`** (382 lines)
+  - Responsive UI with KPI tiles, chart container, table
+  - Toast notification system
+  - Mobile-first CSS Grid layout
+
+- **`dashboard/app.js`** (250+ lines)
+  - Vanilla JavaScript (no frameworks)
+  - API integration with error handling
+  - Chart.js rendering
+  - Config loading and environment detection
+
+- **`dashboard/config.example.js`**
+  - Configuration template
+  - Detailed comments for setup
+  - Security guidance
+
+- **`docs/DASHBOARD_README.md`** (comprehensive guide)
+  - Quick start instructions
+  - Configuration reference
+  - Deployment guide
+  - Troubleshooting and security notes
+
+### Security Note
+
+⚠️ API keys in static sites are **visible in the browser**. Only use read-only keys with analytics-only permissions. Consider IP whitelisting at the API Gateway level.
+
+### More Info
+
+See **`docs/DASHBOARD_README.md`** for:
+- Detailed configuration guide
+- CORS setup
+- GitHub Pages deployment
+- Troubleshooting common issues
+- 6 screenshot examples
+
+---
+
+## �💾 Data Model
 
 ### DynamoDB Schema
 ```json
@@ -303,15 +420,17 @@ aws lambda get-function-configuration --function-name contactFormProcessor --reg
 - [ ] Request SES production access
 
 ### This Month
-- [ ] Implement analytics dashboard
+- [x] ✅ Implement analytics dashboard
 - [ ] Add rate limiting per IP
 - [ ] Set up SNS alerts for errors
 
 ### Future Enhancements
-- [ ] /analytics endpoint
-- [ ] DynamoDB GSI for analytics queries
+- [ ] Advanced analytics (export to CSV)
+- [ ] Submission filtering and search
+- [ ] DynamoDB GSI for faster queries
 - [ ] Lambda concurrency limits
-- [ ] API authentication
+- [ ] API authentication with JWT
+- [ ] Dashboard password protection
 
 ---
 
@@ -365,6 +484,50 @@ ec2d7e9 docs: add final deployment status report - production ready with 2 succe
 
 ---
 
+## 🚀 Demo Without AWS Costs
+
+### For Portfolio Reviews & Client Demos
+
+No AWS billing, no internet needed. Run **everything locally** in ~2 minutes.
+
+```bash
+# Terminal 1: Start local environment
+cd w:\PROJECTS\formbridge
+make local-up          # Starts LocalStack, MailHog, DynamoDB Admin, Frontend
+make local-bootstrap   # Creates DynamoDB table and seeds test data
+
+# Terminal 2: Start API server
+make sam-api           # Starts local Lambda API on port 3000
+
+# Terminal 3: Test
+make local-test        # Runs test submissions
+```
+
+### Access Points
+| Service | URL | Purpose |
+|---------|-----|---------|
+| Frontend | http://localhost:8080 | Portfolio contact form |
+| API | http://localhost:3000/submit | Form submission endpoint |
+| DynamoDB Admin | http://localhost:8001 | View all submissions |
+| MailHog | http://localhost:8025 | View notification emails |
+
+### What You Get
+✅ **Identical to production** - Same code, same logic, same database schema  
+✅ **Zero AWS costs** - All services run locally  
+✅ **Offline capable** - Works without internet  
+✅ **Email testing** - See emails without sending  
+✅ **Data exploration** - Browse submissions via web UI  
+
+### Full Documentation
+See `local/README.md` for:
+- Detailed setup steps
+- Service architecture
+- Troubleshooting guide
+- Windows/PowerShell notes
+- Docker Compose configuration
+
+---
+
 ## ✅ Verification Checklist
 
 - [x] API endpoint responds to requests
@@ -377,6 +540,7 @@ ec2d7e9 docs: add final deployment status report - production ready with 2 succe
 - [x] CloudWatch logs available
 - [x] Git history clean
 - [x] Documentation complete
+- [x] Local demo pack ready
 
 ---
 
