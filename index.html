@@ -148,6 +148,8 @@
     // ---------- CONFIG ----------
     // set this to your API invoke URL
     const API_ENDPOINT = "https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod/submit";
+    // API Key for production authentication
+    const API_KEY = "OU6iPqehCs94cbpttxIKH2cJ7UhQDbuX73zTgSyN";
     // ----------------------------
 
     const sendBtn = document.getElementById('send');
@@ -178,7 +180,10 @@
 
         const resp = await fetch(API_ENDPOINT, {
           method: 'POST',
-          headers: {'Content-Type':'application/json'},
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Api-Key': API_KEY
+          },
           body: JSON.stringify(payload),
           mode: 'cors',
           signal: controller.signal
