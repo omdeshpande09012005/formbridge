@@ -1,0 +1,230 @@
+{
+  "info": {
+    "_postman_id": "formbridge-api-collection",
+    "name": "FormBridge API",
+    "description": "FormBridge serverless form submission API collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Forms",
+      "description": "Form submission endpoints",
+      "item": [
+        {
+          "name": "Submit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.environment.set('submission_id', jsonData.id);",
+                  "    pm.test('Submission ID returned', function () {",
+                  "        pm.expect(jsonData).to.have.property('id');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Api-Key",
+                "value": "{{api_key}}",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"form_id\": \"{{form_id}}\",\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"message\": \"I would like to discuss a project opportunity.\",\n  \"page\": \"{{page}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/submit",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "submit"
+              ]
+            },
+            "description": "Submit a new form entry with contact information"
+          },
+          "response": [
+            {
+              "name": "200 - Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Api-Key",
+                    "value": "{{api_key}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"form_id\": \"my-portfolio\",\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"message\": \"I would like to discuss a project opportunity.\",\n  \"page\": \"https://omdeshpande09012005.github.io/\"\n}"
+                },
+                "url": {
+                  "raw": "http://127.0.0.1:3000/submit",
+                  "protocol": "http",
+                  "host": [
+                    "127.0.0.1"
+                  ],
+                  "port": "3000",
+                  "path": [
+                    "submit"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"my-portfolio#1731800000000\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "description": "Analytics and metrics endpoints",
+      "item": [
+        {
+          "name": "Get Analytics",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.test('Analytics response valid', function () {",
+                  "        pm.expect(jsonData).to.have.property('form_id');",
+                  "        pm.expect(jsonData).to.have.property('total_submissions');",
+                  "        pm.expect(jsonData).to.have.property('last_7_days');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Api-Key",
+                "value": "{{api_key}}",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"form_id\": \"{{form_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/analytics",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "analytics"
+              ]
+            },
+            "description": "Retrieve analytics for a specific form (total submissions, 7-day breakdown, latest submission)"
+          },
+          "response": [
+            {
+              "name": "200 - Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Api-Key",
+                    "value": "{{api_key}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"form_id\": \"my-portfolio\"\n}"
+                },
+                "url": {
+                  "raw": "http://127.0.0.1:3000/analytics",
+                  "protocol": "http",
+                  "host": [
+                    "127.0.0.1"
+                  ],
+                  "port": "3000",
+                  "path": [
+                    "analytics"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"form_id\": \"my-portfolio\",\n  \"total_submissions\": 42,\n  \"last_7_days\": [\n    {\"date\": \"2025-10-30\", \"count\": 3},\n    {\"date\": \"2025-10-31\", \"count\": 5},\n    {\"date\": \"2025-11-01\", \"count\": 2},\n    {\"date\": \"2025-11-02\", \"count\": 7},\n    {\"date\": \"2025-11-03\", \"count\": 4},\n    {\"date\": \"2025-11-04\", \"count\": 8},\n    {\"date\": \"2025-11-05\", \"count\": 13}\n  ],\n  \"latest_id\": \"my-portfolio#1731800000000\",\n  \"last_submission_ts\": 1731800000000\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:3000",
+      "type": "string"
+    },
+    {
+      "key": "api_key",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "form_id",
+      "value": "my-portfolio",
+      "type": "string"
+    },
+    {
+      "key": "page",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "submission_id",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

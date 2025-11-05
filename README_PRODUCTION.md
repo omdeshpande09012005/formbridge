@@ -218,6 +218,139 @@ See **`docs/DASHBOARD_README.md`** for:
 
 ---
 
+## � API Artifacts
+
+Complete API documentation, Postman collection, and Swagger UI for easy integration and testing.
+
+### 📋 What's Included
+
+**OpenAPI 3.0 Specification** (`api/openapi.yaml`)
+- Complete machine-readable spec for both `/submit` and `/analytics` endpoints
+- Security schemes (X-Api-Key header)
+- Request/response schemas with examples
+- Error codes and validation rules
+- DEV and PROD server configurations
+
+**Postman Collection** (`api/postman/FormBridge.postman_collection.json`)
+- Two pre-built requests: Submit and Analytics
+- Environment-aware variables ({{base_url}}, {{api_key}}, {{form_id}}, {{page}})
+- Automatic submission ID capture with test scripts
+- Easy switching between DEV and PROD
+
+**Postman Environments**
+- `api/postman/FormBridge.Dev.postman_environment.json` — Local development
+- `api/postman/FormBridge.Prod.postman_environment.json` — Production (AWS)
+
+**Swagger UI** (`docs/swagger.html`)
+- Interactive API documentation on GitHub Pages
+- "Try it out" buttons for endpoint testing
+- Authentication header support
+- Server selection dropdown (DEV/PROD)
+
+### 🚀 Getting Started
+
+#### Option 1: View Swagger UI Online
+Visit: `https://omdeshpande09012005.github.io/swagger.html`
+
+#### Option 2: Import Postman Collection
+1. Download [Postman](https://www.postman.com/downloads/)
+2. Click **Import** → select `api/postman/FormBridge.postman_collection.json`
+3. Import environment: `FormBridge.Dev.postman_environment.json` or `FormBridge.Prod.postman_environment.json`
+4. Select environment (top-right dropdown)
+5. Click **Send** on any request
+
+#### Option 3: View Locally with Docker
+```bash
+# Run Swagger UI locally
+docker run -p 8888:8080 \
+  -e SWAGGER_JSON=/openapi.yaml \
+  -v $(pwd)/api/openapi.yaml:/openapi.yaml \
+  swaggerapi/swagger-ui
+
+# Open: http://localhost:8888
+```
+
+### 🔐 Security: API Keys
+
+**Development** (Optional)
+- API key not required
+- Server: `http://127.0.0.1:3000`
+- Testing on localhost without authentication
+
+**Production** (Required)
+- API key required for all endpoints
+- Header: `X-Api-Key: your-key`
+- Server: `https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod`
+- Keys stored in AWS Secrets Manager
+
+### 📚 Documentation
+
+- **`api/README.md`** — Complete API guide with cURL examples, auth, and troubleshooting
+- **`docs/OPENAPI_VIEWER.md`** — How to set up Swagger UI locally or on GitHub Pages
+- **`api/openapi.yaml`** — OpenAPI 3.0 specification (machine-readable)
+
+### 🧪 Test Endpoints
+
+#### Submit a Form
+```bash
+curl -X POST https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod/submit \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: your-key" \
+  -d '{
+    "form_id": "my-portfolio",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "message": "Interested in your services!"
+  }'
+```
+
+**Response (200 OK):**
+```json
+{
+  "id": "my-portfolio#1731800000000"
+}
+```
+
+#### Get Analytics
+```bash
+curl -X POST https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod/analytics \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: your-key" \
+  -d '{"form_id": "my-portfolio"}'
+```
+
+**Response (200 OK):**
+```json
+{
+  "form_id": "my-portfolio",
+  "total_submissions": 42,
+  "last_7_days": [
+    {"date": "2025-11-05", "count": 13},
+    {"date": "2025-11-04", "count": 8}
+  ],
+  "latest_id": "my-portfolio#1731800000000",
+  "last_submission_ts": 1731800000000
+}
+```
+
+### 🐛 Troubleshooting
+
+**403 Forbidden (Production)**
+- Check X-Api-Key header is present and valid
+- Verify key hasn't expired
+
+**400 Bad Request**
+- Ensure `message` field is provided (required)
+- Validate email format if provided
+- Check JSON structure matches schema
+
+**CORS Error**
+- Development server has CORS enabled
+- Production may have restrictions—use X-Api-Key header
+- Try testing with Postman (bypasses CORS)
+
+---
+
 ## �💾 Data Model
 
 ### DynamoDB Schema
