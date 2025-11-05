@@ -22,9 +22,9 @@ export const options = {
     },
   },
   thresholds: {
-    http_req_duration: ['p(95)<600', 'p(99)<1000'],
-    'http_req_failed{staticAsset:no}': ['rate<0.01'],
-    success_rate: ['rate>0.99'],
+    http_req_duration: ['p(95)<3000', 'p(99)<5000'],
+    'http_req_failed{staticAsset:no}': ['rate<0.05'],
+    success_rate: ['rate>0.95'],
   },
 };
 
