@@ -1,0 +1,7 @@
+{
+  "form_id": "test-001",
+  "message": "Hello World from FormBridge",
+  "name": "Test User",
+  "email": "test@example.com",
+  "page": "https://example.com"
+}
