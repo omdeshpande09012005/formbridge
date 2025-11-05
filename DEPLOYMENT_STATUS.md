@@ -358,6 +358,66 @@ aws ses get-send-statistics --region ap-south-1 --profile formbridge-deploy
 
 ---
 
+## ✅ Post-Security Validation Checklist
+
+### API Key Protection Verification
+
+- [x] API Key requirement enforced on /submit (POST)
+- [x] 403 response received without X-Api-Key header
+- [x] 200 response received with valid API Key
+- [x] Usage Plan configured: 2 req/sec, 5 burst, 10,000 quota
+- [x] Rate limiting behavior observed under load (429 response)
+- [x] CloudWatch logs confirm apiKeyId on authenticated requests
+- [x] CloudWatch logs show 403 errors for unauthorized requests
+- [x] Invalid API Key returns Forbidden (403)
+- [x] Missing X-Api-Key header returns Forbidden (403)
+- [x] Valid requests include X-Api-Key header
+- [x] Frontend integration updated with API Key
+- [x] CORS headers still present with API Key validation
+- [x] Error responses don't leak sensitive information
+
+### API Gateway Configuration
+
+- [x] API Key created and associated with Usage Plan
+- [x] Usage Plan stages: Prod
+- [x] Rate limit settings enforced: 2 req/sec
+- [x] Monthly quota: 10,000 requests
+- [x] Throttle burst: 5 requests
+- [x] API Key visibility: Hidden from logs (secure)
+- [x] Method-level API Key requirement: ON for POST /submit
+
+### Test Verification
+
+**Test: Without API Key**
+```
+curl -X POST https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod/submit \
+  -H "Content-Type: application/json" \
+  -d '{"form_id":"test","message":"hello"}'
+
+Expected: 403 Forbidden
+✅ Verified
+```
+
+**Test: With Valid API Key**
+```
+curl -X POST https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod/submit \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: [valid-key]" \
+  -d '{"form_id":"test","message":"hello"}'
+
+Expected: 200 OK
+✅ Verified
+```
+
+**Test: Rate Limiting**
+```
+# Send 6 requests within 1 second
+Expected: First 5 succeed (burst), 6th gets 429
+✅ Verified in logs
+```
+
+---
+
 ## 📞 Contact Information
 
 **Account**: 864572276622  

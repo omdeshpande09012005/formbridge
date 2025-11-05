@@ -208,23 +208,66 @@ DynamoDB: ✅ Stored
 ## 🔒 Security
 
 ✅ **Implemented**:
+- API Key protection (X-Api-Key header required)
 - CORS restricted to your domain
 - HTTPS-only API Gateway
 - Environment variables for secrets
 - DynamoDB encryption at rest
 - Request validation
 - Error messages don't leak internals
+- Usage Plan: Rate limit 2 req/sec, 5 burst, 10,000 requests/month
+
+### API Key Configuration
+
+**Requirement**: The `/submit` endpoint now requires an API Key header:
+```bash
+X-Api-Key: YOUR_API_KEY
+```
+
+**Usage Plan Enforced**:
+- Rate limit: 2 requests per second
+- Burst: 5 requests
+- Monthly quota: 10,000 requests
+
+**Key Handling for GitHub Pages**:
+- ⚠️ Static sites cannot truly hide API keys (client-side code is public)
+- ✅ Acceptable for demo/portfolio projects
+- ✅ GitHub Pages + limited quota provides acceptable protection
+- Store key in build-time environment variables (Vite/Next.js .env)
+- Example: `VITE_API_KEY=your-key-here`
+
+**Future Security Upgrades** (if needed):
+- 🔒 WAF IP allowlist for campus/corporate networks
+- 🔒 HMAC-signed requests for better security
+- 🔒 JWT with short-lived tokens behind edge proxy
+- 🔒 Backend proxy that adds key server-side
+- 🔒 Signed short-lived tokens (15-minute expiration)
 
 ⚠️ **Recommendations**:
-- Monitor CloudWatch logs regularly
-- Consider rate limiting per IP
-- Implement request signing (future)
-- Review SES sandbox mode requirements
-- Plan TTL for old submissions
+- Monitor CloudWatch logs for 403 errors
+- Consider implementing IP allowlist for internal use
+- For public-facing sensitive forms, implement backend proxy
+- Review rate limiting if you expect heavy usage
+- Plan for key rotation strategy
 
 ---
 
 ## 🚨 Troubleshooting
+
+### 403 Forbidden Error
+**Problem**: "Forbidden" response when submitting form
+**Solutions**:
+1. Verify API Key is included in `X-Api-Key` header
+2. Check API Key is correct: `aws apigateway get-api-keys --region ap-south-1 --profile formbridge-deploy`
+3. Ensure header is passed in all requests
+
+### 429 Too Many Requests
+**Problem**: Rate limit exceeded
+**Solutions**:
+1. Usage Plan limit: 2 req/sec, 10,000/month
+2. Wait before retrying (exponential backoff)
+3. Check if multiple forms are submitting simultaneously
+4. Contact admin to increase quota if needed
 
 ### API Returns 500 Error
 ```bash
