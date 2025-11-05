@@ -18,6 +18,18 @@ Parameters:
   DDBTableName:
     Type: String
     Default: contact-form-submissions
+  SesSender:
+    Type: String
+    Description: "Verified SES sender email address"
+    Default: "noreply@formbridge.example.com"
+  SesRecipients:
+    Type: String
+    Description: "Comma-separated list of recipient email addresses"
+    Default: "admin@formbridge.example.com"
+  FrontendOrigin:
+    Type: String
+    Description: "Allowed frontend origin for CORS"
+    Default: "https://omdeshpande09012005.github.io"
 
 Resources:
 
@@ -32,12 +44,17 @@ Resources:
     Properties:
       TableName: !Ref DDBTableName
       AttributeDefinitions:
-        - AttributeName: submissionId
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
           AttributeType: S
       KeySchema:
-        - AttributeName: submissionId
+        - AttributeName: pk
           KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
+      # TODO: Add GSI for analytics queries (e.g., by form_id or timestamp)
 
   ContactFormFunction:
     Type: AWS::Serverless::Function
@@ -48,21 +65,22 @@ Resources:
       Environment:
         Variables:
           DDB_TABLE: !Ref DDBTableName
-          SES_RECIPIENT: "omdeshpande123456789@gmail.com"
-          SES_ALLOWED_SENDERS: "sahil.bobhate@mitwpu.edu.in,om.deshpande@mitwpu.edu.in,omdeshpande0901@gmail.com,aayush.das@mitwpu.edu.in"
-          APP_REGION: !Ref "AWS::Region"
+          SES_SENDER: !Ref SesSender
+          SES_RECIPIENTS: !Ref SesRecipients
+          FRONTEND_ORIGIN: !Ref FrontendOrigin
       Policies:
         - Version: "2012-10-17"
           Statement:
             - Effect: Allow
               Action:
                 - dynamodb:PutItem
+                - dynamodb:Query
               Resource: !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DDBTableName}
             - Effect: Allow
               Action:
                 - ses:SendEmail
                 - ses:SendRawEmail
-              Resource: "*"   # tighten in production
+              Resource: "*"
       Events:
         ContactApi:
           Type: Api
@@ -70,6 +88,7 @@ Resources:
             RestApiId: !Ref FormApi
             Path: /submit
             Method: post
+        # TODO: Add /analytics endpoint for retrieving and aggregating submissions
 
 Outputs:
   ApiUrl:
