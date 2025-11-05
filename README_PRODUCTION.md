@@ -661,6 +661,202 @@ See `local/README.md` for:
 
 ---
 
+## 🔐 HMAC Request Signing (Optional Security Enhancement)
+
+**Status**: Optional feature, disabled by default
+
+### What is HMAC Signing?
+
+HMAC-SHA256 request signing adds an optional layer of security to `/submit` and `/analytics` endpoints. Each request is cryptographically signed with a secret key, preventing unauthorized API calls and protecting against request tampering.
+
+- **Default State**: Disabled (`HMAC_ENABLED=false`)
+- **Algorithm**: HMAC-SHA256 with Unix timestamp validation
+- **Headers**: `X-Timestamp` (current time) + `X-Signature` (request signature)
+- **Protection**: Replay attacks blocked via timestamp skew validation
+
+### When to Enable
+
+- Client with strict security requirements
+- Third-party integrations requiring proof of origin
+- Compliance requirements (healthcare, finance, etc.)
+- Production deployments with sensitive data
+
+### Enable HMAC Signing
+
+1. **Generate Secret** (on your deployment machine):
+   ```bash
+   openssl rand -hex 32
+   # Output: a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6
+   ```
+
+2. **Set Lambda Environment Variables**:
+   ```bash
+   aws lambda update-function-configuration \
+     --function-name contactFormProcessor \
+     --environment Variables={HMAC_ENABLED=true,HMAC_SECRET=a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6,HMAC_SKEW_SECS=300} \
+     --region ap-south-1 --profile formbridge-deploy
+   ```
+
+3. **Update Postman Collection**:
+   - Open `api/postman/FormBridge.Prod.postman_environment.json`
+   - Set `hmac_enabled` = `"true"`
+   - Set `hmac_secret` = your generated secret
+   - Collection pre-request script will now auto-sign requests
+
+4. **Update Client Code**:
+   - Follow examples in `docs/HMAC_SIGNING.md`
+   - Web: Use Web Crypto API (async function, no deps)
+   - Python: Use `hmac` + `hashlib` libraries
+   - Node.js: Use `crypto` module
+
+### Error Responses
+
+When HMAC is enabled:
+
+```json
+// Missing timestamp
+{
+  "error": "stale or missing timestamp"
+}
+
+// Invalid signature
+{
+  "error": "invalid signature"
+}
+
+// Stale request (older than HMAC_SKEW_SECS)
+{
+  "error": "stale or missing timestamp"
+}
+```
+
+### Complete Documentation
+
+See `docs/HMAC_SIGNING.md` for:
+- JavaScript Web Crypto API implementation
+- React component example
+- Python requests library example
+- cURL testing examples
+- Server configuration details
+- Troubleshooting guide
+- Security best practices
+
+---
+
+## 📊 CSV Data Export
+
+**Status**: Active, available immediately
+
+### What is CSV Export?
+
+Endpoint `/export` enables bulk data downloads in CSV format for reporting, dashboards, and third-party integrations.
+
+- **Format**: RFC 4180 CSV with headers
+- **Columns**: id, form_id, name, email, message, page, ip, ua, ts
+- **Limit**: 10,000 rows max per request
+- **Range**: 1-90 days configurable
+
+### Quick Export Examples
+
+**cURL**:
+```bash
+curl -X POST https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod/export \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: your-api-key" \
+  -d '{"form_id":"my-portfolio","days":7}' \
+  -o submissions_7d.csv
+```
+
+**Python**:
+```python
+import requests
+
+response = requests.post(
+    'https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod/export',
+    headers={
+        'Content-Type': 'application/json',
+        'X-Api-Key': 'your-api-key'
+    },
+    json={'form_id': 'my-portfolio', 'days': 7}
+)
+
+with open('submissions.csv', 'wb') as f:
+    f.write(response.content)
+```
+
+### API Endpoint
+
+```
+POST /export
+Content-Type: application/json
+X-Api-Key: <required>
+
+{
+  "form_id": "my-portfolio",  // Required
+  "days": 7                    // Optional, 1-90, default 7
+}
+```
+
+**Response** (200 OK):
+```
+Content-Type: text/csv
+Content-Disposition: attachment; filename=formbridge_my-portfolio_7d_20251105.csv
+X-Row-Cap: 0  // Set to 1 if 10,000 row limit reached
+
+id,form_id,name,email,message,page,ip,ua,ts
+my-portfolio#1731800000000,my-portfolio,John Doe,john@example.com,Project inquiry,https://portfolio.com,203.0.113.42,Mozilla/5.0...,1731800000
+```
+
+### Use Cases
+
+1. **Email Campaigns**: Extract email column, send bulk messages
+2. **Google Sheets**: Import CSV, set up recurring manual exports
+3. **CRM Integration**: Map columns to Salesforce/HubSpot fields
+4. **Analytics**: Load into pandas, generate statistics
+5. **Compliance**: Archive submissions for audit trails
+
+### Dashboard Export Button
+
+Analytics dashboard includes "Download CSV" button:
+
+1. Choose date range (1-90 days)
+2. Click "Download" button
+3. Browser saves CSV file: `formbridge_{form_id}_{days}d_{timestamp}.csv`
+
+Dashboard handles HMAC signing automatically if enabled.
+
+### Postman Collection
+
+Pre-configured "Export CSV" request in `api/postman/FormBridge.postman_collection.json`:
+
+1. Open Postman collection
+2. Select "Analytics" folder → "Export CSV" request
+3. Update `form_id` and `days` if needed
+4. Send request
+5. Response shows in "Body" tab (Postman auto-recognizes CSV)
+6. Click "Save Response" → "Save to file" to download
+
+### Limits & Workarounds
+
+**10,000 Row Limit**:
+- `X-Row-Cap: 1` header indicates limit reached
+- Workaround: Export in smaller date ranges (e.g., 7 days at a time)
+
+**90-Day Maximum**:
+- Cannot export data older than 90 days in single request
+- Workaround: Multiple requests with different date ranges
+
+### Complete Documentation
+
+See `docs/EXPORT_README.md` for:
+- Complete API documentation
+- Column descriptions and examples
+- Integration examples (JavaScript, bash, Python)
+- Troubleshooting guide (403, 401, empty CSV, encoding)
+- Use case walkthroughs
+
+---
+
 ## ✅ Verification Checklist
 
 - [x] API endpoint responds to requests

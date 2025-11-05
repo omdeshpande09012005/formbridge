@@ -30,6 +30,21 @@ Parameters:
     Type: String
     Description: "Allowed frontend origin for CORS"
     Default: "https://omdeshpande09012005.github.io"
+  SesProvider:
+    Type: String
+    Description: "Email provider: 'ses' for AWS SES or 'mailhog' for local development"
+    Default: "ses"
+    AllowedValues:
+      - "ses"
+      - "mailhog"
+  MailhogHost:
+    Type: String
+    Description: "MailHog SMTP hostname (for local development)"
+    Default: "mailhog"
+  MailhogPort:
+    Type: String
+    Description: "MailHog SMTP port (for local development)"
+    Default: "1025"
 
 Resources:
 
@@ -54,7 +69,9 @@ Resources:
         - AttributeName: sk
           KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
-      # TODO: Add GSI for analytics queries (e.g., by form_id or timestamp)
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
 
   ContactFormFunction:
     Type: AWS::Serverless::Function
@@ -68,6 +85,9 @@ Resources:
           SES_SENDER: !Ref SesSender
           SES_RECIPIENTS: !Ref SesRecipients
           FRONTEND_ORIGIN: !Ref FrontendOrigin
+          SES_PROVIDER: !Ref SesProvider
+          MAILHOG_HOST: !Ref MailhogHost
+          MAILHOG_PORT: !Ref MailhogPort
       Policies:
         - Version: "2012-10-17"
           Statement:
@@ -88,9 +108,23 @@ Resources:
             RestApiId: !Ref FormApi
             Path: /submit
             Method: post
-        # TODO: Add /analytics endpoint for retrieving and aggregating submissions
+        AnalyticsApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref FormApi
+            Path: /analytics
+            Method: post
 
 Outputs:
   ApiUrl:
     Description: "API Gateway invoke URL for the submit endpoint"
     Value: !Sub "https://${FormApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/submit"
+  AnalyticsUrl:
+    Description: "API Gateway invoke URL for the analytics endpoint"
+    Value: !Sub "https://${FormApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/analytics"
+  FunctionArn:
+    Description: "Lambda function ARN"
+    Value: !GetAtt ContactFormFunction.Arn
+  DynamoDBTable:
+    Description: "DynamoDB table name"
+    Value: !Ref ContactTable

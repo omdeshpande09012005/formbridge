@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  # LocalStack: AWS services emulation (Lambda, API Gateway, DynamoDB, SES, etc.)
+  localstack:
+    image: localstack/localstack:latest
+    container_name: formbridge-localstack
+    ports:
+      - "4566:4566"      # LocalStack gateway (all services)
+      - "4571:4571"      # API Gateway
+    environment:
+      - SERVICES=lambda,apigateway,dynamodb,ses,s3,iam,cloudwatch,sts
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=us-east-1
+    volumes:
+      - "${TMPDIR:-/tmp}/localstack:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    healthcheck:
+      test: ["CMD", "awslocal", "kinesis", "list-streams"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - formbridge-local
+
+  # MailHog: Local SMTP server and email viewer
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: formbridge-mailhog
+    ports:
+      - "1025:1025"      # SMTP port
+      - "8025:8025"      # Web UI
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "1025"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - formbridge-local
+
+  # DynamoDB Admin: Web UI for DynamoDB
+  dynamodb-admin:
+    image: aaronshaf/dynamodb-admin:latest
+    container_name: formbridge-dynamodb-admin
+    ports:
+      - "8001:8001"
+    environment:
+      - DYNAMO_ENDPOINT=http://localstack:4566
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+    depends_on:
+      - localstack
+    networks:
+      - formbridge-local
+
+  # Frontend: Serve static site on port 8080
+  frontend:
+    image: node:18-alpine
+    container_name: formbridge-frontend
+    working_dir: /app
+    volumes:
+      - ../:/app
+    ports:
+      - "8080:8080"
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 8080"
+    environment:
+      - VITE_API_ENDPOINT=http://localhost:3000
+    depends_on:
+      - localstack
+      - mailhog
+    networks:
+      - formbridge-local
+
+networks:
+  formbridge-local:
+    driver: bridge
