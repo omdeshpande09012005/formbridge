@@ -77,7 +77,7 @@ Resources:
   ContactTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Ref DDBTableName
+      TableName: !Sub "contact-form-submissions-${Stage}"
       AttributeDefinitions:
         - AttributeName: pk
           AttributeType: S
@@ -96,7 +96,7 @@ Resources:
   FormConfigTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Ref FormConfigTableName
+      TableName: !Sub "formbridge-config-${Stage}"
       AttributeDefinitions:
         - AttributeName: pk
           AttributeType: S
@@ -113,14 +113,14 @@ Resources:
   WebhookDLQ:
     Type: AWS::SQS::Queue
     Properties:
-      QueueName: !Ref WebhookDLQName
+      QueueName: !Sub "formbridge-webhook-dlq-${Stage}"
       MessageRetentionPeriod: 1209600  # 14 days (max)
       VisibilityTimeout: 60
 
   WebhookQueue:
     Type: AWS::SQS::Queue
     Properties:
-      QueueName: !Ref WebhookQueueName
+      QueueName: !Sub "formbridge-webhook-queue-${Stage}"
       VisibilityTimeout: 60
       MessageRetentionPeriod: 345600  # 4 days
       RedrivePolicy:
