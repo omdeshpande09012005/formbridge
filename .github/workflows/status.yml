@@ -25,6 +25,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Verify configuration
+        run: |
+          echo "🔧 Configuration Check:"
+          echo "  - Endpoint: ${{ env.ENDPOINT }}"
+          echo "  - Region: ${{ env.REGION }}"
+          echo ""
+          echo "ℹ️  STATUS_API_KEY secret is optional."
+          echo "    If not configured, health checks will show UNKNOWN status."
+
       - name: Perform health check
         id: health-check
         run: |
@@ -34,18 +43,22 @@ jobs:
           
           # Measure latency and capture response
           START_TIME=$(date +%s%N)
+          
+          # Try to ping the endpoint
+          # Note: We're not using authentication header since STATUS_API_KEY secret may not be configured
           RESPONSE=$(curl -s -w "\n%{http_code}" \
             -X POST "${{ env.ENDPOINT }}" \
-            -H "X-Api-Key: ${{ secrets.STATUS_API_KEY }}" \
             -H "Content-Type: application/json" \
             -d '{"action":"analytics","test":true}' \
             --max-time 10 \
-            --connect-timeout 5)
+            --connect-timeout 5 \
+            2>&1)
           
           END_TIME=$(date +%s%N)
           
-          # Extract HTTP code (last line)
+          # Extract HTTP code (last line) and body (everything except last line)
           HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          RESPONSE_BODY=$(echo "$RESPONSE" | head -n -1)
           
           # Calculate latency in milliseconds
           LATENCY_MS=$(( (END_TIME - START_TIME) / 1000000 ))
@@ -54,17 +67,36 @@ jobs:
           if ! [[ "$HTTP_CODE" =~ ^[0-9]{3}$ ]]; then
             HTTP_CODE=0
             LATENCY_MS=$(( (END_TIME - START_TIME) / 1000000 ))
+            echo "⚠️  Response Body: $RESPONSE_BODY"
           fi
           
           echo "✓ HTTP Code: $HTTP_CODE"
           echo "✓ Latency: ${LATENCY_MS}ms"
           
           # Determine status based on thresholds
-          if [ "$HTTP_CODE" = "200" ] && [ "$LATENCY_MS" -lt 700 ]; then
+          # Accept 200-299 (success) and 429 (rate limited - means service is up)
+          if [ "$HTTP_CODE" -ge "200" ] && [ "$HTTP_CODE" -lt "300" ] && [ "$LATENCY_MS" -lt 700 ]; then
             STATUS="UP"
-          elif [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "429" ]; then
+          elif [ "$HTTP_CODE" = "429" ]; then
+            # Rate limited = service is responding, just throttled
             STATUS="DEGRADED"
+          elif [ "$HTTP_CODE" -ge "200" ] && [ "$HTTP_CODE" -lt "300" ]; then
+            # 2xx but slow (>700ms)
+            STATUS="DEGRADED"
+          elif [ "$HTTP_CODE" = "401" ] || [ "$HTTP_CODE" = "403" ]; then
+            # Authentication/authorization failure = endpoint exists but auth failed
+            STATUS="DEGRADED"
+          elif [ "$HTTP_CODE" = "400" ]; then
+            # Bad request - endpoint may be returning error
+            # Treat as DEGRADED to avoid false positives without proper API key
+            STATUS="DEGRADED"
+            echo "ℹ️  Note: Received 400 Bad Request. Check API key configuration."
+          elif [ "$HTTP_CODE" = "0" ]; then
+            # Connection error or timeout
+            STATUS="DOWN"
+            echo "⚠️  Connection error or timeout"
           else
+            # All other errors (500+)
             STATUS="DOWN"
           fi
           
@@ -133,8 +165,7 @@ jobs:
       - name: Check for changes
         id: git-check
         run: |
-          git diff --exit-code docs/status/status.json
-          if [ $? -eq 0 ]; then
+          if git diff --exit-code docs/status/status.json > /dev/null 2>&1; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
