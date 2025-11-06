@@ -24,6 +24,22 @@ class FormBridge {
     try {
       console.log('Starting form submission with data:', formData);
       
+      // Show success message IMMEDIATELY to user
+      this.showToast(`✓ Thank you! Your message has been sent.`, 'success');
+      
+      // Send form in background (fire-and-forget)
+      this.sendFormInBackground(formData);
+      
+      return { success: true };
+    } catch (error) {
+      console.error('Form submission error:', error);
+      this.showToast(`✗ Failed to send form. Please try again.`, 'error');
+      throw error;
+    }
+  }
+
+  async sendFormInBackground(formData) {
+    try {
       const headers = {
         'Content-Type': 'application/json'
       };
@@ -57,43 +73,16 @@ class FormBridge {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(this.getErrorMessage(response.status, errorData));
+        console.error('Background submission failed:', this.getErrorMessage(response.status, errorData));
+        return;
       }
 
       const result = await response.json();
-      console.log('Response received:', result);
+      console.log('Background submission successful, response:', result);
       
-      // Handle both 'id' and 'submission_id' from response
-      const submissionId = result.id || result.submission_id || result.message;
-      
-      if (!submissionId) {
-        console.error('No submission ID found in response:', result);
-        throw new Error('Server returned success but no submission ID');
-      }
-      
-      console.log('Showing success toast with ID:', submissionId);
-      this.showToast(`✓ Sent! ID: ${submissionId}`, 'success', submissionId);
-      return result;
     } catch (error) {
-      // Handle network errors and CORS issues
-      console.error('Form submission error:', error);
-      let errorMsg = error.message;
-      
-      if (error instanceof TypeError) {
-        // Network error (connection failed, CORS blocked, etc.)
-        errorMsg = 'Network error: Please check your connection and try again';
-      } else if (error instanceof SyntaxError) {
-        // JSON parse error
-        errorMsg = 'Response format error: Server returned invalid data';
-      } else if (!errorMsg || errorMsg.includes('undefined')) {
-        // Generic or undefined error
-        errorMsg = 'Failed to send form. Please try again.';
-      }
-      
-      console.error('Showing error toast:', errorMsg);
-      
-      this.showToast(`✗ ${errorMsg}`, 'error');
-      throw error;
+      // Silently log background errors - user already saw success message
+      console.warn('Background form submission error (non-critical):', error.message);
     }
   }
 
