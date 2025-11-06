@@ -22,6 +22,8 @@ class FormBridge {
 
   async submitForm(formData) {
     try {
+      console.log('Starting form submission with data:', formData);
+      
       const headers = {
         'Content-Type': 'application/json'
       };
@@ -59,12 +61,22 @@ class FormBridge {
       }
 
       const result = await response.json();
+      console.log('Response received:', result);
+      
       // Handle both 'id' and 'submission_id' from response
       const submissionId = result.id || result.submission_id || result.message;
+      
+      if (!submissionId) {
+        console.error('No submission ID found in response:', result);
+        throw new Error('Server returned success but no submission ID');
+      }
+      
+      console.log('Showing success toast with ID:', submissionId);
       this.showToast(`✓ Sent! ID: ${submissionId}`, 'success', submissionId);
       return result;
     } catch (error) {
       // Handle network errors and CORS issues
+      console.error('Form submission error:', error);
       let errorMsg = error.message;
       
       if (error instanceof TypeError) {
@@ -77,6 +89,8 @@ class FormBridge {
         // Generic or undefined error
         errorMsg = 'Failed to send form. Please try again.';
       }
+      
+      console.error('Showing error toast:', errorMsg);
       
       this.showToast(`✗ ${errorMsg}`, 'error');
       throw error;
