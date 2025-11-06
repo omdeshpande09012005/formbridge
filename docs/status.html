@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Status - FormBridge</title>
+  <meta name="description" content="Real-time FormBridge API status and uptime monitor.">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/site.css">
+  <style>
+    @keyframes pulse-status {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .status-pulse {
+      animation: pulse-status 2s infinite;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-sm sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="index.html" data-internal class="text-xl font-bold text-blue-600">FormBridge</a>
+        <div class="hidden md:flex gap-8">
+          <a href="index.html" data-internal class="text-gray-700 hover:text-blue-600">Home</a>
+          <a href="features.html" data-internal class="text-gray-700 hover:text-blue-600">Features</a>
+          <a href="pricing.html" data-internal class="text-gray-700 hover:text-blue-600">Pricing</a>
+          <a href="contact.html" data-internal class="bg-blue-600 text-white px-4 py-2 rounded-lg">Get Started</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="bg-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">API Status</h1>
+      <p class="text-gray-600 text-lg">Real-time status of FormBridge services and infrastructure</p>
+    </div>
+  </section>
+
+  <!-- Status Overview -->
+  <section class="py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-3 gap-6 mb-12">
+        <!-- Overall Status -->
+        <div class="bg-white rounded-lg shadow p-8">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-gray-900">Overall Status</h2>
+            <div class="w-4 h-4 bg-green-500 rounded-full status-pulse"></div>
+          </div>
+          <p class="text-3xl font-bold text-green-600 mb-2">All Systems Operational</p>
+          <p class="text-sm text-gray-500">Last updated: <span id="last-updated">just now</span></p>
+        </div>
+
+        <!-- Uptime -->
+        <div class="bg-white rounded-lg shadow p-8">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Uptime</h2>
+          <div class="space-y-2">
+            <div>
+              <p class="text-sm text-gray-600">This Month</p>
+              <p class="text-2xl font-bold text-gray-900">99.99%</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600">This Year</p>
+              <p class="text-2xl font-bold text-gray-900">99.99%</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Incidents -->
+        <div class="bg-white rounded-lg shadow p-8">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Incidents</h2>
+          <div class="space-y-2">
+            <div>
+              <p class="text-sm text-gray-600">Last 30 Days</p>
+              <p class="text-2xl font-bold text-gray-900">0</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600">Last Year</p>
+              <p class="text-2xl font-bold text-gray-900">1</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services -->
+      <div class="bg-white rounded-lg shadow overflow-hidden mb-12">
+        <div class="border-b border-gray-200 p-6">
+          <h2 class="text-lg font-semibold text-gray-900">Service Components</h2>
+        </div>
+        
+        <div class="divide-y divide-gray-200">
+          <!-- API Gateway -->
+          <div class="p-6 flex items-center justify-between hover:bg-gray-50">
+            <div>
+              <h3 class="font-semibold text-gray-900">API Gateway</h3>
+              <p class="text-sm text-gray-600">Main entry point for all requests</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-green-600 font-semibold">Operational</span>
+              <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+            </div>
+          </div>
+
+          <!-- Lambda Compute -->
+          <div class="p-6 flex items-center justify-between hover:bg-gray-50">
+            <div>
+              <h3 class="font-semibold text-gray-900">Lambda Compute</h3>
+              <p class="text-sm text-gray-600">Serverless form processing</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-green-600 font-semibold">Operational</span>
+              <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+            </div>
+          </div>
+
+          <!-- DynamoDB -->
+          <div class="p-6 flex items-center justify-between hover:bg-gray-50">
+            <div>
+              <h3 class="font-semibold text-gray-900">DynamoDB</h3>
+              <p class="text-sm text-gray-600">Data storage and retrieval</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-green-600 font-semibold">Operational</span>
+              <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+            </div>
+          </div>
+
+          <!-- SES Email -->
+          <div class="p-6 flex items-center justify-between hover:bg-gray-50">
+            <div>
+              <h3 class="font-semibold text-gray-900">SES Email Service</h3>
+              <p class="text-sm text-gray-600">Email sending and delivery</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-green-600 font-semibold">Operational</span>
+              <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+            </div>
+          </div>
+
+          <!-- Webhooks -->
+          <div class="p-6 flex items-center justify-between hover:bg-gray-50">
+            <div>
+              <h3 class="font-semibold text-gray-900">Webhooks (SQS)</h3>
+              <p class="text-sm text-gray-600">Event delivery and routing</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-green-600 font-semibold">Operational</span>
+              <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+            </div>
+          </div>
+
+          <!-- Analytics -->
+          <div class="p-6 flex items-center justify-between hover:bg-gray-50">
+            <div>
+              <h3 class="font-semibold text-gray-900">Analytics Dashboard</h3>
+              <p class="text-sm text-gray-600">Real-time metrics and reporting</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-green-600 font-semibold">Operational</span>
+              <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metrics -->
+      <div class="grid md:grid-cols-2 gap-6 mb-12">
+        <div class="bg-white rounded-lg shadow p-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-6">API Response Times (Last 24h)</h2>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between mb-2">
+                <p class="text-sm text-gray-600">p50 (Median)</p>
+                <p class="font-semibold text-gray-900">45ms</p>
+              </div>
+              <div class="w-full bg-gray-200 rounded h-2">
+                <div class="bg-blue-600 h-2 rounded" style="width: 45%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between mb-2">
+                <p class="text-sm text-gray-600">p95</p>
+                <p class="font-semibold text-gray-900">85ms</p>
+              </div>
+              <div class="w-full bg-gray-200 rounded h-2">
+                <div class="bg-blue-600 h-2 rounded" style="width: 85%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between mb-2">
+                <p class="text-sm text-gray-600">p99</p>
+                <p class="font-semibold text-gray-900">150ms</p>
+              </div>
+              <div class="w-full bg-gray-200 rounded h-2">
+                <div class="bg-blue-600 h-2 rounded" style="width: 100%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-6">Error Rates (Last 24h)</h2>
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-600">4xx Client Errors</p>
+                <p class="text-2xl font-bold text-orange-600">0.02%</p>
+              </div>
+              <div class="text-sm text-gray-500">~2 per 100k</div>
+            </div>
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-600">5xx Server Errors</p>
+                <p class="text-2xl font-bold text-green-600">0.00%</p>
+              </div>
+              <div class="text-sm text-gray-500">~0 per 100k</div>
+            </div>
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-600">Overall Success Rate</p>
+                <p class="text-2xl font-bold text-green-600">99.98%</p>
+              </div>
+              <div class="text-sm text-gray-500">~99,980 per 100k</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Incident History -->
+      <div class="bg-white rounded-lg shadow">
+        <div class="border-b border-gray-200 p-6">
+          <h2 class="text-lg font-semibold text-gray-900">Incident History</h2>
+        </div>
+        
+        <div class="divide-y divide-gray-200">
+          <div class="p-6">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="font-semibold text-gray-900">January 2025</p>
+                <p class="text-sm text-gray-600">No incidents reported</p>
+              </div>
+              <span class="text-green-600 text-sm font-semibold">99.99%</span>
+            </div>
+          </div>
+
+          <div class="p-6">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="font-semibold text-gray-900">December 2024</p>
+                <p class="text-sm text-gray-600">No incidents reported</p>
+              </div>
+              <span class="text-green-600 text-sm font-semibold">99.99%</span>
+            </div>
+          </div>
+
+          <div class="p-6">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="font-semibold text-gray-900">November 2024</p>
+                <p class="text-sm text-gray-600">Brief DynamoDB maintenance (15 min)</p>
+              </div>
+              <span class="text-orange-600 text-sm font-semibold">99.97%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLA Info -->
+  <section class="bg-gray-50 py-12 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">Service Level Agreement</h2>
+      <div class="bg-white rounded-lg p-6 space-y-4">
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <h3 class="font-semibold text-gray-900 mb-2">Guaranteed Uptime</h3>
+            <p class="text-gray-600">FormBridge guarantees 99.99% availability for the API Gateway and core services. Any downtime exceeding this will result in service credits.</p>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-900 mb-2">Support Coverage</h3>
+            <p class="text-gray-600">Technical support available 24/7 via email. Response times: Critical issues within 1 hour, Standard issues within 4 hours.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Subscribe -->
+  <section class="bg-blue-600 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-2xl font-bold mb-4">Get Status Updates</h2>
+      <p class="mb-6 text-blue-100">Subscribe to our status page for real-time incident notifications.</p>
+      <div class="flex flex-col md:flex-row gap-4 justify-center">
+        <input type="email" placeholder="your@email.com" class="px-4 py-2 rounded text-gray-900 flex-1 max-w-xs">
+        <button class="bg-white text-blue-600 px-6 py-2 rounded font-semibold hover:bg-blue-50 transition">Subscribe</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-300 py-12 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-4 gap-8 mb-8">
+        <div>
+          <h3 class="text-white font-semibold mb-4">Product</h3>
+          <ul class="space-y-2">
+            <li><a href="features.html" data-internal class="hover:text-white transition">Features</a></li>
+            <li><a href="pricing.html" data-internal class="hover:text-white transition">Pricing</a></li>
+            <li><a href="docs.html" data-internal class="hover:text-white transition">Docs</a></li>
+            <li><a href="analytics.html" data-internal class="hover:text-white transition">Analytics</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-white font-semibold mb-4">Company</h3>
+          <ul class="space-y-2">
+            <li><a href="about.html" data-internal class="hover:text-white transition">About</a></li>
+            <li><a href="status.html" data-internal class="hover:text-white transition">Status</a></li>
+            <li><a href="blog/index.html" data-internal class="hover:text-white transition">Blog</a></li>
+            <li><a href="contact.html" data-internal class="hover:text-white transition">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-white font-semibold mb-4">Legal</h3>
+          <ul class="space-y-2">
+            <li><a href="privacy.html" data-internal class="hover:text-white transition">Privacy</a></li>
+            <li><a href="terms.html" data-internal class="hover:text-white transition">Terms</a></li>
+            <li><a href="security.html" data-internal class="hover:text-white transition">Security</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-white font-semibold mb-4">Follow</h3>
+          <ul class="space-y-2">
+            <li><a href="https://github.com/omdeshpande09012005/formbridge" target="_blank" class="hover:text-white transition">GitHub</a></li>
+            <li><a href="mailto:om.deshpande@mitwpu.edu.in" class="hover:text-white transition">Email</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 pt-8 text-center">
+        <p>&copy; 2025 FormBridge. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/site.js"></script>
+</body>
+</html>

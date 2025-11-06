@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security - FormBridge</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body class="bg-white">
+  <nav class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center">
+      <a href="index.html" data-internal class="text-xl font-bold text-blue-600">FormBridge</a>
+    </div>
+  </nav>
+
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <h1 class="text-4xl font-bold text-gray-900 mb-8">Security Policy</h1>
+    
+    <div class="prose prose-lg max-w-none text-gray-600 space-y-6">
+      <p>
+        <strong>Last updated:</strong> January 6, 2025
+      </p>
+
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Security at FormBridge</h2>
+        <p>
+          FormBridge takes security seriously. We implement multiple layers of security to protect your data and ensure the integrity of our platform.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Data Encryption</h2>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>In Transit:</strong> All data transmitted over HTTPS using TLS 1.2 or higher encryption</li>
+          <li><strong>At Rest:</strong> Sensitive data encrypted using AES-256 encryption</li>
+          <li><strong>Database:</strong> DynamoDB encryption enabled by default</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Authentication & Authorization</h2>
+        <ul class="list-disc pl-6 space-y-2">
+          <li>HMAC-SHA256 signatures for request verification</li>
+          <li>API key management with rotation capabilities</li>
+          <li>IAM (Identity and Access Management) controls</li>
+          <li>Rate limiting and DDoS protection</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Infrastructure Security</h2>
+        <ul class="list-disc pl-6 space-y-2">
+          <li>AWS-managed serverless services (Lambda, DynamoDB, API Gateway)</li>
+          <li>Automatic security patches and updates</li>
+          <li>VPC isolation and private subnets</li>
+          <li>CloudTrail logging for audit trails</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Compliance</h2>
+        <ul class="list-disc pl-6 space-y-2">
+          <li>GDPR compliant</li>
+          <li>AWS SOC 2 Type II certified</li>
+          <li>Regular security audits</li>
+          <li>Incident response procedures</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Data Retention</h2>
+        <p>
+          Users can delete their data at any time. FormBridge retains form submissions according to user preferences, with options for automatic deletion after a specified period.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Security Updates</h2>
+        <p>
+          We continuously monitor for vulnerabilities and apply patches promptly. Critical security updates are deployed immediately, and regular security assessments are conducted.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Reporting Security Issues</h2>
+        <p>
+          If you discover a security vulnerability, please report it responsibly to:
+        </p>
+        <p>
+          <a href="mailto:om.deshpande@mitwpu.edu.in" class="text-blue-600 hover:underline">om.deshpande@mitwpu.edu.in</a>
+        </p>
+        <p>
+          Please do not publicly disclose the vulnerability until we have had a chance to address it.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Third-Party Security</h2>
+        <p>
+          FormBridge uses AWS-managed services exclusively. AWS undergoes regular security audits and complies with major security standards including ISO 27001, SOC 2, PCI DSS, and more.
+        </p>
+      </section>
+    </div>
+  </div>
+
+  <footer class="bg-gray-900 text-gray-300 py-12 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <p>&copy; 2025 FormBridge. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About FormBridge - Serverless Form Management</title>
+  <meta name="description" content="Learn about FormBridge, the modern serverless form management platform built on AWS.">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body class="bg-white">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-sm sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="index.html" data-internal class="text-xl font-bold text-blue-600">FormBridge</a>
+        <div class="hidden md:flex gap-8">
+          <a href="index.html" data-internal class="text-gray-700 hover:text-blue-600">Home</a>
+          <a href="features.html" data-internal class="text-gray-700 hover:text-blue-600">Features</a>
+          <a href="pricing.html" data-internal class="text-gray-700 hover:text-blue-600">Pricing</a>
+          <a href="contact.html" data-internal class="bg-blue-600 text-white px-4 py-2 rounded-lg">Get Started</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 class="text-4xl font-bold mb-4">About FormBridge</h1>
+      <p class="text-blue-100 text-lg max-w-2xl">Modern form management for the serverless era</p>
+    </div>
+  </section>
+
+  <!-- Story -->
+  <section class="py-16">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-gray-900 mb-6">Our Story</h2>
+      <p class="text-gray-600 text-lg mb-6">
+        FormBridge was born from a simple frustration: managing contact forms shouldn't be complicated. Traditional form services were either too limited or too expensive. We set out to build something better.
+      </p>
+      <p class="text-gray-600 text-lg mb-6">
+        By leveraging AWS Lambda, DynamoDB, and SES, we created a serverless form management platform that's:
+      </p>
+      <ul class="space-y-3 mb-8 text-gray-600">
+        <li class="flex items-start gap-3">
+          <span class="text-blue-600 font-bold mt-1">✓</span>
+          <span><strong>Cost-effective:</strong> Pay only for what you use. No upfront costs or hidden fees.</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-blue-600 font-bold mt-1">✓</span>
+          <span><strong>Reliable:</strong> Built on battle-tested AWS services with 99.99% uptime guarantee.</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-blue-600 font-bold mt-1">✓</span>
+          <span><strong>Secure:</strong> HMAC-SHA256 signing, SSL/TLS encryption, and compliance-ready.</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-blue-600 font-bold mt-1">✓</span>
+          <span><strong>Flexible:</strong> Webhooks, custom emails, and analytics built-in.</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Mission & Values -->
+  <section class="bg-gray-50 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white rounded-lg p-8 shadow">
+          <div class="text-4xl mb-4">🎯</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">Our Mission</h3>
+          <p class="text-gray-600">
+            To provide the simplest, most reliable form management solution for businesses of all sizes.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-lg p-8 shadow">
+          <div class="text-4xl mb-4">⚡</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">Performance</h3>
+          <p class="text-gray-600">
+            Lightning-fast response times, global CDN, and auto-scaling infrastructure for any traffic level.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-lg p-8 shadow">
+          <div class="text-4xl mb-4">🤝</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">Support</h3>
+          <p class="text-gray-600">
+            Comprehensive documentation, API reference, and responsive support team ready to help.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technology Stack -->
+  <section class="py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-gray-900 mb-12 text-center">Built on Modern Technology</h2>
+      
+      <div class="grid md:grid-cols-2 gap-12">
+        <div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-6">Backend Infrastructure</h3>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-3">
+              <span class="text-2xl">⚡</span>
+              <div>
+                <p class="font-semibold text-gray-900">AWS Lambda</p>
+                <p class="text-sm text-gray-600">Serverless compute for instant scaling</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-2xl">📊</span>
+              <div>
+                <p class="font-semibold text-gray-900">DynamoDB</p>
+                <p class="text-sm text-gray-600">NoSQL database with guaranteed durability</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-2xl">📧</span>
+              <div>
+                <p class="font-semibold text-gray-900">SES (Simple Email Service)</p>
+                <p class="text-sm text-gray-600">Reliable email delivery at scale</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-2xl">🚀</span>
+              <div>
+                <p class="font-semibold text-gray-900">API Gateway</p>
+                <p class="text-sm text-gray-600">RESTful API with built-in security</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-2xl">🔗</span>
+              <div>
+                <p class="font-semibold text-gray-900">SQS & SNS</p>
+                <p class="text-sm text-gray-600">Message queuing and notifications</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-6">Frontend & Integration</h3>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-3">
+              <span class="text-2xl">🌐</span>
+              <div>
+                <p class="font-semibold text-gray-900">HTML/CSS/JavaScript</p>
+                <p class="text-sm text-gray-600">Lightweight, dependency-free integration</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-2xl">📚</span>
+              <div>
+                <p class="font-semibold text-gray-900">Tailwind CSS</p>
+                <p class="text-sm text-gray-600">Modern utility-first styling framework</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-2xl">📈</span>
+              <div>
+                <p class="font-semibold text-gray-900">Chart.js</p>
+                <p class="text-sm text-gray-600">Beautiful analytics visualizations</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-2xl">🔐</span>
+              <div>
+                <p class="font-semibold text-gray-900">Security Libraries</p>
+                <p class="text-sm text-gray-600">HMAC signing and encryption</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-2xl">🛠️</span>
+              <div>
+                <p class="font-semibold text-gray-900">Open Standards</p>
+                <p class="text-sm text-gray-600">REST, JSON, OAuth-ready</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Key Metrics -->
+  <section class="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-4 gap-8 text-center">
+        <div>
+          <div class="text-4xl font-bold mb-2">99.99%</div>
+          <p class="text-blue-100">Uptime SLA</p>
+        </div>
+        <div>
+          <div class="text-4xl font-bold mb-2">< 100ms</div>
+          <p class="text-blue-100">Average Response</p>
+        </div>
+        <div>
+          <div class="text-4xl font-bold mb-2">∞</div>
+          <p class="text-blue-100">Concurrent Requests</p>
+        </div>
+        <div>
+          <div class="text-4xl font-bold mb-2">24/7</div>
+          <p class="text-blue-100">Support Available</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-16">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-gray-900 mb-12 text-center">Frequently Asked Questions</h2>
+
+      <div class="space-y-8">
+        <div>
+          <h3 class="text-lg font-bold text-gray-900 mb-3">Is FormBridge really free?</h3>
+          <p class="text-gray-600">
+            Yes! Our free tier includes up to 100 submissions per month. Premium plans start at $9/month for more submissions and advanced features like webhooks and custom templates.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-gray-900 mb-3">How secure is FormBridge?</h3>
+          <p class="text-gray-600">
+            Security is our top priority. All data is encrypted in transit (SSL/TLS) and at rest. We support HMAC-SHA256 signing for request verification, and all infrastructure is on AWS with industry-leading compliance certifications.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-gray-900 mb-3">Can I export my data?</h3>
+          <p class="text-gray-600">
+            Absolutely! You can export all your submissions as CSV or JSON from the analytics dashboard anytime. Your data is always yours.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-gray-900 mb-3">What about API rate limits?</h3>
+          <p class="text-gray-600">
+            Free tier has generous limits (1,000 requests per day). Premium tiers offer higher limits with auto-scaling support for any traffic level. Contact us for enterprise pricing.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-gray-900 mb-3">Do you have an SLA?</h3>
+          <p class="text-gray-600">
+            Yes! We guarantee 99.99% uptime with automatic failover and monitoring. If we fall short, you get service credits.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="bg-gray-50 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">Join thousands of developers using FormBridge</h2>
+      <p class="text-gray-600 mb-8 text-lg">Start managing your forms the modern way today.</p>
+      <a href="contact.html" data-internal class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition inline-block">
+        Get Started for Free
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-300 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-4 gap-8 mb-8">
+        <div>
+          <h3 class="text-white font-semibold mb-4">Product</h3>
+          <ul class="space-y-2">
+            <li><a href="features.html" data-internal class="hover:text-white transition">Features</a></li>
+            <li><a href="pricing.html" data-internal class="hover:text-white transition">Pricing</a></li>
+            <li><a href="docs.html" data-internal class="hover:text-white transition">Docs</a></li>
+            <li><a href="analytics.html" data-internal class="hover:text-white transition">Analytics</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-white font-semibold mb-4">Company</h3>
+          <ul class="space-y-2">
+            <li><a href="about.html" data-internal class="hover:text-white transition">About</a></li>
+            <li><a href="blog/index.html" data-internal class="hover:text-white transition">Blog</a></li>
+            <li><a href="status.html" data-internal class="hover:text-white transition">Status</a></li>
+            <li><a href="contact.html" data-internal class="hover:text-white transition">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-white font-semibold mb-4">Legal</h3>
+          <ul class="space-y-2">
+            <li><a href="privacy.html" data-internal class="hover:text-white transition">Privacy</a></li>
+            <li><a href="terms.html" data-internal class="hover:text-white transition">Terms</a></li>
+            <li><a href="security.html" data-internal class="hover:text-white transition">Security</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-white font-semibold mb-4">Follow</h3>
+          <ul class="space-y-2">
+            <li><a href="https://github.com/omdeshpande09012005/formbridge" target="_blank" class="hover:text-white transition">GitHub</a></li>
+            <li><a href="mailto:om.deshpande@mitwpu.edu.in" class="hover:text-white transition">Email</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 pt-8 text-center">
+        <p>&copy; 2025 FormBridge. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/site.js"></script>
+</body>
+</html>

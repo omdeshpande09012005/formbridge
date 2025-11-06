@@ -1,0 +1,193 @@
+================================================================================
+                    FORMBRIDGE IAM USER REFERENCE
+================================================================================
+
+CURRENT ACTIVE USER: formbridge-deploy
+STATUS: ✅ CONFIGURED & VERIFIED
+DATE: November 6, 2025
+
+================================================================================
+                          IAM USER DETAILS
+================================================================================
+
+User Name:      formbridge-deploy
+User ID:        AIDA4STEF76HCTVPSR7VK
+Account ID:     864572276622
+Region:         ap-south-1
+
+AWS Profile:    formbridge-deploy
+ARN:            arn:aws:iam::864572276622:user/formbridge-deploy
+
+================================================================================
+                          PERMISSIONS AVAILABLE
+================================================================================
+
+✅ CloudFormation (Full)
+   - CreateChangeSet
+   - CreateStack
+   - UpdateStack
+   - DeleteStack
+   - DescribeStackEvents
+
+✅ Lambda (Full)
+   - CreateFunction
+   - UpdateFunctionCode
+   - UpdateFunctionConfiguration
+   - ListFunctions
+
+✅ DynamoDB (Full)
+   - CreateTable
+   - UpdateTable
+   - DeleteTable
+   - PutItem
+   - GetItem
+   - Query
+
+✅ SES (Full)
+   - SendEmail
+   - VerifyEmailIdentity
+   - ListVerifiedEmailAddresses
+
+✅ SQS (Full)
+   - CreateQueue
+   - SendMessage
+   - ReceiveMessage
+   - DeleteMessage
+
+✅ IAM (Full)
+   - CreateRole
+   - AttachRolePolicy
+   - PutRolPolicy
+
+✅ S3 (Full)
+   - GetObject
+   - PutObject
+   - ListBucket
+
+================================================================================
+                          HOW TO USE THIS USER
+================================================================================
+
+OPTION 1: Set Environment Variable (Current Terminal)
+-----------
+PowerShell:
+  $env:AWS_PROFILE="formbridge-deploy"
+
+Bash/Linux:
+  export AWS_PROFILE=formbridge-deploy
+
+OPTION 2: Use in Commands
+-----------
+  aws command --profile formbridge-deploy
+  sam deploy --profile formbridge-deploy
+
+OPTION 3: Set System-wide (Permanent)
+-----------
+Windows:
+  Set environment variable: AWS_PROFILE = formbridge-deploy
+
+================================================================================
+                          VERIFICATION COMMANDS
+================================================================================
+
+Check Current User:
+  aws sts get-caller-identity --profile formbridge-deploy
+
+Check Credentials:
+  cat ~/.aws/credentials | grep formbridge -A 2
+
+List AWS Profiles:
+  aws configure list-profiles
+
+================================================================================
+                          DEPLOYMENT COMMANDS
+================================================================================
+
+Build Backend:
+  cd backend
+  sam build
+
+Deploy Backend:
+  cd backend
+  sam deploy --stack-name formbridge-stack \
+    --capabilities CAPABILITY_IAM \
+    --no-confirm-changeset \
+    --profile formbridge-deploy
+
+Check Stack Status:
+  aws cloudformation describe-stacks \
+    --stack-name formbridge-stack \
+    --query 'Stacks[0].StackStatus' \
+    --region ap-south-1 \
+    --profile formbridge-deploy
+
+================================================================================
+                          IMPORTANT NOTES
+================================================================================
+
+⚠️  ALWAYS USE formbridge-deploy for:
+    - Backend deployments (sam deploy)
+    - AWS CLI commands
+    - CloudFormation operations
+    - Lambda updates
+    - DynamoDB modifications
+
+❌ NEVER USE:
+    - OD_User (has restricted permissions)
+    - Default credentials (if not formbridge-deploy)
+    - Other IAM users without explicit permission
+
+✅ VERIFIED WORKING:
+    - Email sending: ✅ Tested Nov 6, 2025
+    - Stack deployment: ✅ UPDATE_COMPLETE
+    - Lambda functions: ✅ Updated
+    - API Gateway: ✅ CORS enabled
+    - DynamoDB: ✅ Ready
+
+================================================================================
+                          LAST DEPLOYMENT
+================================================================================
+
+Date:           November 6, 2025
+User:           formbridge-deploy
+Stack:          formbridge-stack
+Status:         UPDATE_COMPLETE
+Functions:      ContactFormProcessor, WebhookDispatcher
+Email Test:     ✅ SUCCESS (ID: ac8c0650-c97f-4ab0-a7d9-81eb5430db14)
+Region:         ap-south-1
+
+API Endpoint:   https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod
+SES Sender:     omdeshpande123456789@gmail.com
+Recipients:     om.deshpande@mitwpu.edu.in
+
+================================================================================
+                          QUICK START
+================================================================================
+
+1. Set AWS Profile:
+   $env:AWS_PROFILE="formbridge-deploy"
+
+2. Verify User:
+   aws sts get-caller-identity --profile formbridge-deploy
+
+3. Deploy Backend:
+   cd backend && sam build && sam deploy
+
+4. Send Test Email:
+   .\send_email_via_api.ps1
+
+5. Check Results:
+   - CloudWatch Logs: /aws/lambda/contactFormProcessor
+   - DynamoDB: contact-form-submissions-prod
+   - Email: Check inbox
+
+================================================================================
+                          SUPPORT
+================================================================================
+
+For deployment help:          See DEPLOYMENT_VERIFICATION.md
+For AWS profile setup:         See AWS_PROFILE_SETUP.md
+For email sending:             See EMAIL_SENDER_GUIDE.md
+For frontend issues:           See FRONTEND_TESTING_GUIDE.md
+
+================================================================================

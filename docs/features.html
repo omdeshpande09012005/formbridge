@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Features - FormBridge</title>
+  <meta name="description" content="Comprehensive form management features including validation, HMAC security, webhooks, and analytics.">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body class="bg-white">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-sm sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="index.html" data-internal class="text-xl font-bold text-blue-600">FormBridge</a>
+        <div class="hidden md:flex gap-8">
+          <a href="index.html" data-internal class="text-gray-700 hover:text-blue-600">Home</a>
+          <a href="features.html" data-internal class="text-gray-700 hover:text-blue-600 font-semibold">Features</a>
+          <a href="pricing.html" data-internal class="text-gray-700 hover:text-blue-600">Pricing</a>
+          <a href="contact.html" data-internal class="bg-blue-600 text-white px-4 py-2 rounded-lg">Get Started</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 class="text-4xl font-bold mb-4">Powerful Features for Modern Forms</h1>
+      <p class="text-blue-100 text-lg max-w-2xl">Everything you need to manage, validate, and analyze form submissions at scale.</p>
+    </div>
+  </section>
+
+  <!-- Features Grid -->
+  <section class="py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Feature 1: Form Validation -->
+      <div class="mb-16 grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">Advanced Form Validation</h2>
+          <p class="text-gray-600 mb-4">Validate form fields server-side with comprehensive error messages. Support for:</p>
+          <ul class="space-y-2 text-gray-600 mb-6">
+            <li>✓ Email validation with RFC standards</li>
+            <li>✓ Custom regex patterns</li>
+            <li>✓ Required field checks</li>
+            <li>✓ Field length limits</li>
+            <li>✓ Custom validation rules</li>
+          </ul>
+          <a href="docs.html" data-internal class="text-blue-600 hover:text-blue-700 font-semibold">Learn more →</a>
+        </div>
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-8 h-64 flex items-center justify-center">
+          <div class="text-center">
+            <div class="text-5xl mb-4">✓</div>
+            <p class="text-gray-600">Smart Validation Engine</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 2: HMAC Security -->
+      <div class="mb-16 grid md:grid-cols-2 gap-8 items-center md:order-2">
+        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-8 h-64 flex items-center justify-center">
+          <div class="text-center">
+            <div class="text-5xl mb-4">🔒</div>
+            <p class="text-gray-600">HMAC-SHA256 Signing</p>
+          </div>
+        </div>
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">Security with HMAC Signatures</h2>
+          <p class="text-gray-600 mb-4">Ensure request authenticity with HMAC-SHA256 signatures. Features:</p>
+          <ul class="space-y-2 text-gray-600 mb-6">
+            <li>✓ Timestamp-based nonce validation</li>
+            <li>✓ Prevent replay attacks</li>
+            <li>✓ Request integrity verification</li>
+            <li>✓ Optional but recommended for production</li>
+            <li>✓ Easy integration with libraries</li>
+          </ul>
+          <a href="docs.html" data-internal class="text-blue-600 hover:text-blue-700 font-semibold">Learn more →</a>
+        </div>
+      </div>
+
+      <!-- Feature 3: Email Branding -->
+      <div class="mb-16 grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">Customizable Email Branding</h2>
+          <p class="text-gray-600 mb-4">Match your brand with flexible email templates:</p>
+          <ul class="space-y-2 text-gray-600 mb-6">
+            <li>✓ HTML email templates</li>
+            <li>✓ Responsive design (mobile-friendly)</li>
+            <li>✓ Custom CSS and styling</li>
+            <li>✓ Brand colors and fonts</li>
+            <li>✓ Professional layouts</li>
+          </ul>
+          <a href="docs.html" data-internal class="text-blue-600 hover:text-blue-700 font-semibold">Learn more →</a>
+        </div>
+        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-8 h-64 flex items-center justify-center">
+          <div class="text-center">
+            <div class="text-5xl mb-4">🎨</div>
+            <p class="text-gray-600">Email Templates</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 4: Analytics -->
+      <div class="mb-16 grid md:grid-cols-2 gap-8 items-center md:order-2">
+        <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-8 h-64 flex items-center justify-center">
+          <div class="text-center">
+            <div class="text-5xl mb-4">📊</div>
+            <p class="text-gray-600">Real-Time Analytics</p>
+          </div>
+        </div>
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">Comprehensive Analytics Dashboard</h2>
+          <p class="text-gray-600 mb-4">Track and analyze all your submissions:</p>
+          <ul class="space-y-2 text-gray-600 mb-6">
+            <li>✓ Real-time submission tracking</li>
+            <li>✓ Submission trends and charts</li>
+            <li>✓ Success rate monitoring</li>
+            <li>✓ Response time metrics</li>
+            <li>✓ CSV export capabilities</li>
+          </ul>
+          <a href="analytics.html" data-internal class="text-blue-600 hover:text-blue-700 font-semibold">View Dashboard →</a>
+        </div>
+      </div>
+
+      <!-- Feature 5: Webhooks -->
+      <div class="mb-16 grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">Webhook Integration</h2>
+          <p class="text-gray-600 mb-4">Route submissions to external systems in real-time:</p>
+          <ul class="space-y-2 text-gray-600 mb-6">
+            <li>✓ SQS queue support</li>
+            <li>✓ HTTP webhook endpoints</li>
+            <li>✓ Conditional routing rules</li>
+            <li>✓ Retry logic for failed delivery</li>
+            <li>✓ Event filtering and mapping</li>
+          </ul>
+          <a href="docs.html" data-internal class="text-blue-600 hover:text-blue-700 font-semibold">Learn more →</a>
+        </div>
+        <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-8 h-64 flex items-center justify-center">
+          <div class="text-center">
+            <div class="text-5xl mb-4">🪝</div>
+            <p class="text-gray-600">Webhook Routing</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 6: Multi-Form Support -->
+      <div class="mb-16 grid md:grid-cols-2 gap-8 items-center md:order-2">
+        <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg p-8 h-64 flex items-center justify-center">
+          <div class="text-center">
+            <div class="text-5xl mb-4">📋</div>
+            <p class="text-gray-600">Multiple Forms</p>
+          </div>
+        </div>
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">Manage Multiple Forms</h2>
+          <p class="text-gray-600 mb-4">Create and manage multiple form types:</p>
+          <ul class="space-y-2 text-gray-600 mb-6">
+            <li>✓ Unique form IDs</li>
+            <li>✓ Form-specific routing</li>
+            <li>✓ Separate analytics per form</li>
+            <li>✓ Custom fields per form</li>
+            <li>✓ Independent configurations</li>
+          </ul>
+          <a href="docs.html" data-internal class="text-blue-600 hover:text-blue-700 font-semibold">Learn more →</a>
+        </div>
+      </div>
+
+      <!-- Feature 7: Data Export -->
+      <div class="mb-16 grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">Easy Data Export</h2>
+          <p class="text-gray-600 mb-4">Export your data whenever you need it:</p>
+          <ul class="space-y-2 text-gray-600 mb-6">
+            <li>✓ CSV export format</li>
+            <li>✓ JSON export support</li>
+            <li>✓ Date range filtering</li>
+            <li>✓ Form-specific exports</li>
+            <li>✓ Download directly from dashboard</li>
+          </ul>
+          <a href="analytics.html" data-internal class="text-blue-600 hover:text-blue-700 font-semibold">Try it out →</a>
+        </div>
+        <div class="bg-gradient-to-br from-teal-50 to-teal-100 rounded-lg p-8 h-64 flex items-center justify-center">
+          <div class="text-center">
+            <div class="text-5xl mb-4">📥</div>
+            <p class="text-gray-600">Data Export</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 8: High Availability -->
+      <div class="grid md:grid-cols-2 gap-8 items-center md:order-2">
+        <div class="bg-gradient-to-br from-cyan-50 to-cyan-100 rounded-lg p-8 h-64 flex items-center justify-center">
+          <div class="text-center">
+            <div class="text-5xl mb-4">⚡</div>
+            <p class="text-gray-600">99.99% Uptime</p>
+          </div>
+        </div>
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">Built for Reliability</h2>
+          <p class="text-gray-600 mb-4">Enterprise-grade infrastructure:</p>
+          <ul class="space-y-2 text-gray-600 mb-6">
+            <li>✓ 99.99% SLA uptime guarantee</li>
+            <li>✓ Auto-scaling capabilities</li>
+            <li>✓ Global CDN for fast delivery</li>
+            <li>✓ DynamoDB for data durability</li>
+            <li>✓ Real-time monitoring</li>
+          </ul>
+          <a href="status.html" data-internal class="text-blue-600 hover:text-blue-700 font-semibold">Check Status →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison Table -->
+  <section class="bg-gray-50 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Complete Feature Comparison</h2>
+      
+      <div class="overflow-x-auto">
+        <table class="w-full bg-white rounded-lg shadow">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="px-6 py-4 text-left font-semibold text-gray-900">Feature</th>
+              <th class="px-6 py-4 text-center font-semibold text-gray-900">FormBridge</th>
+              <th class="px-6 py-4 text-center font-semibold text-gray-500">Others</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <tr>
+              <td class="px-6 py-4 font-medium text-gray-900">Form Validation</td>
+              <td class="px-6 py-4 text-center text-green-600 font-bold">✓</td>
+              <td class="px-6 py-4 text-center text-gray-400">✓</td>
+            </tr>
+            <tr class="bg-gray-50">
+              <td class="px-6 py-4 font-medium text-gray-900">HMAC Security</td>
+              <td class="px-6 py-4 text-center text-green-600 font-bold">✓</td>
+              <td class="px-6 py-4 text-center text-gray-400">✗</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 font-medium text-gray-900">Email Branding</td>
+              <td class="px-6 py-4 text-center text-green-600 font-bold">✓</td>
+              <td class="px-6 py-4 text-center text-gray-400">✓</td>
+            </tr>
+            <tr class="bg-gray-50">
+              <td class="px-6 py-4 font-medium text-gray-900">Real-Time Analytics</td>
+              <td class="px-6 py-4 text-center text-green-600 font-bold">✓</td>
+              <td class="px-6 py-4 text-center text-gray-400">Paid only</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 font-medium text-gray-900">Webhook Support</td>
+              <td class="px-6 py-4 text-center text-green-600 font-bold">✓</td>
+              <td class="px-6 py-4 text-center text-gray-400">Paid only</td>
+            </tr>
+            <tr class="bg-gray-50">
+              <td class="px-6 py-4 font-medium text-gray-900">Data Export</td>
+              <td class="px-6 py-4 text-center text-green-600 font-bold">✓</td>
+              <td class="px-6 py-4 text-center text-gray-400">Paid only</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 font-medium text-gray-900">Multiple Forms</td>
+              <td class="px-6 py-4 text-center text-green-600 font-bold">✓</td>
+              <td class="px-6 py-4 text-center text-gray-400">Limited</td>
+            </tr>
+            <tr class="bg-gray-50">
+              <td class="px-6 py-4 font-medium text-gray-900">99.99% SLA</td>
+              <td class="px-6 py-4 text-center text-green-600 font-bold">✓</td>
+              <td class="px-6 py-4 text-center text-gray-400">✗</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl font-bold mb-4">Ready to Get Started?</h2>
+      <p class="text-blue-100 mb-8 text-lg">Experience all these features today with a free FormBridge account.</p>
+      <a href="contact.html" data-internal class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition inline-block">
+        Start for Free
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-300 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-4 gap-8 mb-8">
+        <div>
+          <h3 class="text-white font-semibold mb-4">Product</h3>
+          <ul class="space-y-2">
+            <li><a href="features.html" data-internal class="hover:text-white transition">Features</a></li>
+            <li><a href="pricing.html" data-internal class="hover:text-white transition">Pricing</a></li>
+            <li><a href="docs.html" data-internal class="hover:text-white transition">Docs</a></li>
+            <li><a href="analytics.html" data-internal class="hover:text-white transition">Analytics</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-white font-semibold mb-4">Resources</h3>
+          <ul class="space-y-2">
+            <li><a href="blog/index.html" data-internal class="hover:text-white transition">Blog</a></li>
+            <li><a href="status.html" data-internal class="hover:text-white transition">Status</a></li>
+            <li><a href="about.html" data-internal class="hover:text-white transition">About</a></li>
+            <li><a href="contact.html" data-internal class="hover:text-white transition">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-white font-semibold mb-4">Legal</h3>
+          <ul class="space-y-2">
+            <li><a href="privacy.html" data-internal class="hover:text-white transition">Privacy</a></li>
+            <li><a href="terms.html" data-internal class="hover:text-white transition">Terms</a></li>
+            <li><a href="security.html" data-internal class="hover:text-white transition">Security</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-white font-semibold mb-4">Follow</h3>
+          <ul class="space-y-2">
+            <li><a href="https://github.com/omdeshpande09012005/formbridge" target="_blank" class="hover:text-white transition">GitHub</a></li>
+            <li><a href="mailto:om.deshpande@mitwpu.edu.in" class="hover:text-white transition">Email</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 pt-8 text-center">
+        <p>&copy; 2025 FormBridge. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/site.js"></script>
+</body>
+</html>
