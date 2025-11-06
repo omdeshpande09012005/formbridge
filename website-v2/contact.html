@@ -222,9 +222,9 @@
   <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2 pointer-events-none"></div>
 
   <!-- Scripts -->
-  <script src="js/config.js"></script>
-  <script src="js/formbridge.js"></script>
-  <script src="js/site.js"></script>
+  <script src="js/config.js?v=1"></script>
+  <script src="js/formbridge.js?v=1"></script>
+  <script src="js/site.js?v=1"></script>
 
   <script>
     document.getElementById('contact-form').addEventListener('submit', async (e) => {
@@ -250,7 +250,12 @@
         // Add timestamp
         data.timestamp = Math.floor(Date.now() / 1000);
         
-        const fb = new FormBridge();
+        // Ensure CONFIG is available
+        if (!window.CONFIG) {
+          throw new Error('Configuration not loaded. Please refresh the page.');
+        }
+        
+        const fb = new FormBridge(window.CONFIG);
         const result = await fb.submitForm(data);
         
         // Show success
