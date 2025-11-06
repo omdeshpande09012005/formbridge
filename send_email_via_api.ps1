@@ -1,45 +1,49 @@
-# FormBridge Email Sender via API
-# Send email using your FormBridge service
+param(
+    [string]$Sender = "omdeshpande123456789@gmail.com",
+    [string]$Recipient = "om.deshpande@mitwpu.edu.in"
+)
 
-param([string]$To = "om.deshpande@mitwpu.edu.in")
-
-$ApiUrl = "https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod/submit"
+$Api = "https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod/submit"
 $Template = ".\email_templates\base.html"
 
-Write-Host "`n===== FormBridge Email Sender =====" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "--- FormBridge Email Sender ---" -ForegroundColor Cyan
+Write-Host ""
 
 if (-not (Test-Path $Template)) {
-    Write-Host "Template not found: $Template" -ForegroundColor Red
+    Write-Host "ERROR: Template not found" -ForegroundColor Red
     exit 1
 }
 
-Write-Host "Loading template..." -ForegroundColor Yellow
-$TemplateSize = (Get-Item $Template).Length
-Write-Host "Template size: $TemplateSize bytes" -ForegroundColor Green
+$Size = (Get-Item $Template).Length
+Write-Host "Template loaded: $Size bytes" -ForegroundColor Green
 
-$JsonPayload = @{
+$Payload = @{
     form_id = "email-test"
     name = "Om Deshpande"
-    email = "om.deshpande@mitwpu.edu.in"
+    email = $Sender
     message = "Testing FormBridge with base.html template"
-    page = "https://omdeshpande09012005.github.io/formbridge/"
 } | ConvertTo-Json
 
-Write-Host "`nSending email..." -ForegroundColor Yellow
-Write-Host "API: $ApiUrl"
-Write-Host "To: $To`n"
+Write-Host ""
+Write-Host "Sending from: $Sender" -ForegroundColor Yellow
+Write-Host "Sending to: $Recipient" -ForegroundColor Yellow
+Write-Host ""
 
 try {
-    $Response = Invoke-WebRequest -Uri $ApiUrl -Method POST `
+    $Response = Invoke-WebRequest -Uri $Api `
+        -Method POST `
         -Headers @{"Content-Type" = "application/json"} `
-        -Body $JsonPayload -ErrorAction Stop
+        -Body $Payload `
+        -ErrorAction Stop
     
     $Result = $Response.Content | ConvertFrom-Json
-    Write-Host "SUCCESS!" -ForegroundColor Green
-    Write-Host "Response:`n$($Result | ConvertTo-Json -Depth 3 | Out-String)"
+    Write-Host "SUCCESS! Email sent" -ForegroundColor Green
+    Write-Host "Response: $($Result | ConvertTo-Json)" -ForegroundColor Green
     exit 0
 }
 catch {
-    Write-Host "FAILED: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "ERROR: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "Check AWS Lambda logs for details"
     exit 1
 }
