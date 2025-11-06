@@ -59,15 +59,26 @@ class FormBridge {
       }
 
       const result = await response.json();
-      this.showToast(`✓ Sent! ID: ${result.id}`, 'success', result.id);
+      // Handle both 'id' and 'submission_id' from response
+      const submissionId = result.id || result.submission_id || result.message;
+      this.showToast(`✓ Sent! ID: ${submissionId}`, 'success', submissionId);
       return result;
     } catch (error) {
       // Handle network errors and CORS issues
-      if (error instanceof TypeError && error.message.includes('fetch')) {
-        this.showToast(`✗ Network error: Please check your connection and try again`, 'error');
-      } else {
-        this.showToast(`✗ ${error.message}`, 'error');
+      let errorMsg = error.message;
+      
+      if (error instanceof TypeError) {
+        // Network error (connection failed, CORS blocked, etc.)
+        errorMsg = 'Network error: Please check your connection and try again';
+      } else if (error instanceof SyntaxError) {
+        // JSON parse error
+        errorMsg = 'Response format error: Server returned invalid data';
+      } else if (!errorMsg || errorMsg.includes('undefined')) {
+        // Generic or undefined error
+        errorMsg = 'Failed to send form. Please try again.';
       }
+      
+      this.showToast(`✗ ${errorMsg}`, 'error');
       throw error;
     }
   }
