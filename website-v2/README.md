@@ -59,8 +59,8 @@ Open http://localhost:8080 in your browser.
 
 1. Push to GitHub (branch: `main`)
 2. Enable GitHub Pages in repo settings
-3. Set source to `main` branch, folder `/formbridge/website-v2/`
-4. Site will be live at: `https://omdeshpande09012005.github.io/formbridge/website-v2/`
+3. Set source to `main` branch, folder `/docs/`
+4. Site will be live at: `https://omdeshpande09012005.github.io/formbridge/`
 
 ## File Structure
 
