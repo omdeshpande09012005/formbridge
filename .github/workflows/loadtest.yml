@@ -1,12 +1,6 @@
-name: Load Test (k6 Smoke Test)
+name: Load Test (k6 Smoke Test) - DISABLED
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:

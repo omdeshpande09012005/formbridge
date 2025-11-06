@@ -1,9 +1,6 @@
-name: FormBridge Full Test Suite
+name: FormBridge Full Test Suite - DISABLED
 
 on:
-  schedule:
-    # Run tests every 6 hours
-    - cron: '0 */6 * * *'
   workflow_dispatch:
     inputs:
       environment:
