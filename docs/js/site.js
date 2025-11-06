@@ -93,16 +93,36 @@ function setupPageBaseLinks() {
   });
 }
 
-// Analytics ping (optional)
+// Analytics ping (optional, with error handling)
 function trackPageView() {
   if (window.CONFIG?.ENABLE_ANALYTICS) {
-    // Send a ping to your analytics endpoint
-    const url = new URL(`${window.CONFIG.API_URL}/analytics`);
-    navigator.sendBeacon(url.toString(), JSON.stringify({
-      form_id: 'site-analytics',
-      page: window.location.pathname,
-      timestamp: Math.floor(Date.now() / 1000)
-    }));
+    try {
+      // Send a ping to your analytics endpoint using sendBeacon (best for analytics)
+      const url = new URL(`${window.CONFIG.API_URL}/analytics`);
+      const payload = JSON.stringify({
+        form_id: 'site-analytics',
+        page: window.location.pathname,
+        timestamp: Math.floor(Date.now() / 1000)
+      });
+      
+      // sendBeacon is fire-and-forget, doesn't trigger CORS issues
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(url.toString(), payload);
+      } else {
+        // Fallback for older browsers (no error tracking)
+        fetch(url.toString(), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: payload,
+          keepalive: true
+        }).catch(() => {
+          // Silently fail - analytics is non-critical
+        });
+      }
+    } catch (error) {
+      // Silently fail - analytics errors should not affect user experience
+      console.debug('Analytics tracking failed (non-critical):', error.message);
+    }
   }
 }
 
