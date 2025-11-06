@@ -48,6 +48,7 @@ class FormBridge {
 
       const response = await fetch(`${this.config.API_URL}/submit`, {
         method: 'POST',
+        mode: 'cors',
         headers,
         body: JSON.stringify(body)
       });
@@ -61,7 +62,12 @@ class FormBridge {
       this.showToast(`✓ Sent! ID: ${result.id}`, 'success', result.id);
       return result;
     } catch (error) {
-      this.showToast(`✗ ${error.message}`, 'error');
+      // Handle network errors and CORS issues
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        this.showToast(`✗ Network error: Please check your connection and try again`, 'error');
+      } else {
+        this.showToast(`✗ ${error.message}`, 'error');
+      }
       throw error;
     }
   }

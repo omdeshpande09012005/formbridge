@@ -5,10 +5,10 @@ Description: FormBridge backend - SAM template (Globals-based CORS, runtime pyth
 Globals:
   Api:
     Cors:
-      # exact origin (must be a quoted string inside single-quotes)
-      AllowOrigin: "'https://omdeshpande09012005.github.io/formbridge/'"
-      AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-      AllowMethods: "'POST,OPTIONS'"
+      # Allow multiple origins for FormBridge frontend
+      AllowOrigin: "'*'"
+      AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Timestamp,X-Signature'"
+      AllowMethods: "'POST,OPTIONS,GET'"
   Function:
     Timeout: 30
     Runtime: python3.11
