@@ -7,7 +7,7 @@ region = "ap-south-1"
 stack_name = "formbridge-stack"
 resolve_s3 = true
 capabilities = "CAPABILITY_IAM"
-confirm_changeset = true
+confirm_changeset = false
 disable_rollback = false
 parameter_overrides = "Stage=\"prod\" DDBTableName=\"contact-form-submissions-prod\" FormConfigTableName=\"formbridge-config-prod\" WebhookQueueName=\"formbridge-webhook-queue-prod\" WebhookDLQName=\"formbridge-webhook-dlq-prod\" SesSender=\"omdeshpande123456789@gmail.com\" SesRecipients=\"om.deshpande@mitwpu.edu.in\" FrontendOrigin=\"https://omdeshpande09012005.github.io/formbridge/\""
 s3_prefix = "formbridge-stack"
