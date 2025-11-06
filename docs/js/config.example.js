@@ -2,8 +2,8 @@
 // Copy this file to config.js and update with your settings
 
 window.CONFIG = {
-  // GitHub Pages base path (used for internal links)
-  PAGES_BASE: "/formbridge/website-v2",
+  // GitHub Pages base path (use /formbridge for root/docs folder deployment)
+  PAGES_BASE: "/formbridge",
   
   // API Configuration
   API_URL: "https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod",
