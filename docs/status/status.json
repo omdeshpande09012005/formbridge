@@ -1,17 +1,11 @@
 {
-  "updated_at": "2025-11-13T04:38:07Z",
+  "updated_at": "2025-11-13T04:52:17Z",
   "endpoint": "https://12mse3zde5.execute-api.ap-south-1.amazonaws.com/Prod/analytics",
   "region": "ap-south-1",
   "status": "DEGRADED",
   "http_code": 400,
-  "latency_ms": 1684,
+  "latency_ms": 1525,
   "history": [
-    {
-      "t": "2025-11-09T18:19:14Z",
-      "code": 400,
-      "lat": 1344,
-      "s": "DEGRADED"
-    },
     {
       "t": "2025-11-09T18:42:54Z",
       "code": 400,
@@ -1204,6 +1198,12 @@
       "t": "2025-11-13T04:38:07Z",
       "code": 400,
       "lat": 1684,
+      "s": "DEGRADED"
+    },
+    {
+      "t": "2025-11-13T04:52:17Z",
+      "code": 400,
+      "lat": 1525,
       "s": "DEGRADED"
     }
   ]
